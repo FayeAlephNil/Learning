@@ -1,4 +1,4 @@
-module Main where
+module Divisible where
 
 getAllDivisibles n = [x | x <- [1..], x `mod` n == 0]
 getSomeDivisibles y x = take y (getAllDivisibles x)
