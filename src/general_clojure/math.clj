@@ -62,4 +62,4 @@
   (< (sum-factors num) (* 2 num)))
 
 (def negatives (multiples -1))
-(def whole (of-natural #(dec %)))
+(def whole (of-natural dec))
