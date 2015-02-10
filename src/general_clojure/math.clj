@@ -29,7 +29,7 @@
   [possible n]
   (zero? (mod n possible)))
 
-(defn factors-
+(defn factors
   "Returns the factors of given number"
   [n]
   (let [factors-below-sqrt (filter #(factorof? % n) (range 1 (inc (Math/sqrt n))))
@@ -38,16 +38,16 @@
 
 (def factors
   "Returns the factors of given number"
-  (memoize factors-))
+  (memoize factors))
 
-(defn sum-factors-
+(defn sum-factors
   "Sums the factors of a number"
   [n]
   (reduce + (factors n)))
 
 (def sum-factors
   "Sums the factors of a number"
-  (memoize sum-factors-))
+  (memoize sum-factors))
 
 (defn perfect?
   "Tells if a number is perfect"
