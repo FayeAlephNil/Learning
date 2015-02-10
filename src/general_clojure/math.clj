@@ -70,6 +70,14 @@
   [n]
   (= (factors n) [1 n]))
 
+(defn factorial
+  "Finds the factorial of a number"
+  [n]
+  (loop [cnt n acc 1]
+    (if (zero? cnt)
+      acc
+      (recur (dec cnt) (* acc cnt)))))
+
 (def negatives
   "All the negative numbers"
   (multiples -1))
