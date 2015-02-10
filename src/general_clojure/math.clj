@@ -65,6 +65,11 @@
   [n]
   (< (sum-factors n) (* 2 n)))
 
+(defn prime?
+  "Checks if a number is prime"
+  [n]
+  (= (factors n) [1 n]))
+
 (def negatives
   "All the negative numbers"
   (multiples -1))
