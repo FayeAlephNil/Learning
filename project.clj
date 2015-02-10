@@ -3,6 +3,7 @@
   :license {:name "MIT license"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.6.0"]]
+  :plugins [[lein-kibit "0.0.8"]]
   :main ^:skip-aot general-clojure.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

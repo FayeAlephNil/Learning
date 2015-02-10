@@ -24,7 +24,7 @@
 
 (defn factorof?
   [possible num]
-  (= (mod num possible) 0))
+  (zero? (mod num possible)))
 
 (defn factors-
   [num]
@@ -53,4 +53,4 @@
   (< (sum-factors num) (* 2 num)))
 
 (def negatives (multiples -1))
-(def whole (of-natural #(- % 1)))
+(def whole (of-natural #(dec %)))
