@@ -1,14 +1,13 @@
 (ns general-clojure.math)
 
-(defn natural
-  "Returns all natural numbers"
-  []
+(def natural
+  "All natural numbers"
   (iterate inc 1))
 
 (defn of-natural
   "Maps on the natural numbers"
   [func]
-  (map func (natural)))
+  (map func natural))
 
 (defn multiples
   "Multiplies each natural number by the number provided"
@@ -84,3 +83,6 @@
 (def whole
   "All the whole numbers"
   (of-natural dec))
+(def primes
+  "All the primes"
+  (filter prime? natural))
