@@ -86,3 +86,6 @@
 (def primes
   "All the primes"
   (filter prime? natural))
+(def perfects
+  "All the perfect numbers"
+  (filter perfect? natural))
