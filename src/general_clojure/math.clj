@@ -12,54 +12,62 @@
 
 (defn multiples
   "Multiplies each natural number by the number provided"
-  [num]
-  (of-natural #(* % num)))
+  [n]
+  (of-natural #(* % n)))
 
 (defn under
-  "Maps the natural numbers in the following way num/natural"
-  [num]
-  (of-natural #(/ % num)))
+  "Maps the natural numbers in the following way number/natural"
+  [n]
+  (of-natural #(/ % n)))
 
 (defn divided-by
-  "Divides each natural number by num"
-  [num]
-  (of-natural #(/ num %)))
+  "Divides each natural number by the number passed in"
+  [n]
+  (of-natural #(/ n %)))
 
 (defn factorof?
-  "Returns whether or not possible is a factor of num"
-  [possible num]
-  (zero? (mod num possible)))
+  "Returns whether or not possible is a factor of the number passed in"
+  [possible n]
+  (zero? (mod n possible)))
 
 (defn factors-
-  "Returns the factors of given num"
-  [num]
-  (let [factors-below-sqrt (filter #(factorof? % num) (range 1 (inc (Math/sqrt num))))
-        factors-above-sqrt (map #(/ num %) factors-below-sqrt)]
+  "Returns the factors of given number"
+  [n]
+  (let [factors-below-sqrt (filter #(factorof? % n) (range 1 (inc (Math/sqrt n))))
+        factors-above-sqrt (map #(/ n %) factors-below-sqrt)]
     (distinct (concat factors-below-sqrt factors-above-sqrt))))
 
-(def factors (memoize factors-))
+(def factors
+  "Returns the factors of given number"
+  (memoize factors-))
 
 (defn sum-factors-
   "Sums the factors of a number"
-  [num]
-  (reduce + (factors num)))
+  [n]
+  (reduce + (factors n)))
 
-(def sum-factors (memoize sum-factors-))
+(def sum-factors
+  "Sums the factors of a number"
+  (memoize sum-factors-))
 
 (defn perfect?
   "Tells if a number is perfect"
-  [num]
-  (= (sum-factors num) (* 2 num)))
+  [n]
+  (= (sum-factors n) (* 2 n)))
 
 (defn abundant?
   "Tells if a number is abundant"
-  [num]
-  (> (sum-factors num) (* 2 num)))
+  [n]
+  (> (sum-factors n) (* 2 n)))
 
 (defn deficient?
   "Tells if a number is deficient"
-  [num]
-  (< (sum-factors num) (* 2 num)))
+  [n]
+  (< (sum-factors n) (* 2 n)))
 
-(def negatives (multiples -1))
-(def whole (of-natural dec))
+(def negatives
+  "All the negative numbers"
+  (multiples -1))
+(def whole
+  "All the whole numbers"
+  (of-natural dec))
