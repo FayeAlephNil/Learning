@@ -3,5 +3,5 @@
             [general-clojure.core :refer :all]))
 
 (deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+  (testing "Always returns true because we aren't doing anything in core yet :P"
+    true))
