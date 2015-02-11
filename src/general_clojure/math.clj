@@ -14,13 +14,13 @@
   [n]
   (of-natural #(* % n)))
 
-(defn under
-  "Maps the natural numbers in the following way number/natural"
+(defn divided-by
+  "Divides each natural number by the number passed in"
   [n]
   (of-natural #(/ % n)))
 
-(defn divided-by
-  "Divides each natural number by the number passed in"
+(defn under
+  "Maps the natural numbers in the following way number/natural"
   [n]
   (of-natural #(/ n %)))
 
