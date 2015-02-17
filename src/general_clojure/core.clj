@@ -1,5 +1,7 @@
 (ns general-clojure.core
-  (:gen-class) (:use general-clojure.math) (:use general-clojure.closures))
+  (:gen-class)
+  (:require [general-clojure.math :as m])
+  (:require [general-clojure.closures :as c]))
 
 (defn -main
   "For my general Clojure things"
