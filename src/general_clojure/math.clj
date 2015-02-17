@@ -7,7 +7,7 @@
 (defn of-natural
   "Maps on the natural numbers"
   [func]
-  (map func natural))
+  (pmap func natural))
 
 (defn multiples
   "Multiplies each natural number by the number provided"
@@ -38,7 +38,7 @@
   "Returns the factors of given number"
   [n]
   (let [factors-below-sqrt (filter #(factorof? % n) (range 1 (inc (Math/sqrt n))))
-        factors-above-sqrt (map #(/ n %) factors-below-sqrt)]
+        factors-above-sqrt (pmap #(/ n %) factors-below-sqrt)]
     (sort (distinct (concat factors-below-sqrt factors-above-sqrt)))))
 
 (def factors
