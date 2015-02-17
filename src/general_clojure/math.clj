@@ -39,7 +39,7 @@
   [n]
   (let [factors-below-sqrt (filter #(factorof? % n) (range 1 (inc (Math/sqrt n))))
         factors-above-sqrt (pmap #(/ n %) factors-below-sqrt)]
-    (sort (distinct (concat factors-below-sqrt factors-above-sqrt)))))
+    (->> (concat factors-below-sqrt factors-above-sqrt) sort distinct)))
 
 (def factors
   "Returns the factors of given number"
@@ -62,7 +62,7 @@
   (loop [the-factors (factors n) result ()]
     (if (empty? the-factors)
       result
-      (recur (rest (butlast the-factors)) (cons [(first the-factors) (last the-factors)] result)))))
+      (recur (-> (butlast the-factors) rest) (cons [(first the-factors) (last the-factors)] result)))))
 
 (def factor-pairs
   "Gives the factor pairs for a number"
