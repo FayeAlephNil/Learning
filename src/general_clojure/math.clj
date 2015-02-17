@@ -24,6 +24,11 @@
   [n]
   (of-natural #(/ n %)))
 
+(defn palindrome?
+  "Checks whether or not a number is a palindrome"
+  [n]
+  (== n (->> (str n) reverse (apply str) Integer/parseInt)))
+
 (defn factorof?
   "Returns whether or not possible is a factor of the number passed in"
   [possible n]
