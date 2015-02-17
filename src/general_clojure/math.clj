@@ -70,7 +70,7 @@
 
 (defn prime-factorization
   "Gets the prime factorization of a number"
-  ([n] (prime-factorization n 2))
+  ([n] (if (prime? n) (list 1 n) (prime-factorization n 2)))
   ([n candidate]
    (cond (< n candidate) []
          (zero? (rem n candidate))
