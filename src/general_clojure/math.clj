@@ -69,12 +69,17 @@
   (memoize factor-pairs))
 
 (defn prime-factorization
-  "Gives the prime factorization of a number"
-  [n]
-  (loop [remaining (seq (first (factor-pairs n)))]
-    (if (filter #((or (not (prime? %)) (=  % 1))) remaining)
-      remaining
-      (recur ((prime-factorization (first remaining)) (prime-factorization (last remaining)))))))
+  "Gets the prime factorization of a number"
+  ([n] (prime-factorization n 2))
+  ([n candidate]
+   (cond (< n candidate) []
+         (zero? (rem n candidate))
+         (cons candidate (prime-factorization (/ n candidate) candidate))
+         :else (prime-factorization n (+ 1 candidate)))))
+
+(def prime-factorization
+  "Gets the prime factorization of a number"
+  (memoize prime-factorization))
 
 (defn sum-factors
   "Sums the factors of a number"
