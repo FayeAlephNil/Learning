@@ -1,4 +1,5 @@
-(ns general-clojure.math)
+(ns general-clojure.math
+  (:require [general-clojure.util :as u]))
 
 (def natural
   "All natural numbers"
@@ -44,6 +45,15 @@
 (def factors
   "Returns the factors of given number"
   (memoize factors))
+
+(defn gcf
+  "Finds the greatest common factor of the numbers"
+  [& nums]
+  (->> (map factors nums) (apply u/common) last))
+
+(def gcf
+  "Finds the greatest common factor of the numbers"
+  (memoize gcf))
 
 (defn prime?
   "Checks if a number is prime"
