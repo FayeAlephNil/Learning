@@ -48,12 +48,18 @@
 
 (defn gcf
   "Finds the greatest common factor of the numbers"
-  [& nums]
-  (->> (map factors nums) (apply u/common) last))
+  [n m & nums]
+  (->> (concat (list n m) nums) (map factors) (apply u/common) last))
 
 (def gcf
   "Finds the greatest common factor of the numbers"
   (memoize gcf))
+
+(defn lcm
+  "Finds the least common denominator of the nums"
+  [n m & nums]
+  (let [nums (concat (list n m) nums)]
+    (->> (apply gcf nums) (/ (reduce * nums)))))
 
 (defn prime?
   "Checks if a number is prime"
