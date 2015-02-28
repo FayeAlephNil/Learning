@@ -15,6 +15,10 @@
   [n]
   (of-natural #(* % n)))
 
+(def negatives
+  "All the negative numbers"
+  (multiples -1))
+
 (defn divided-by
   "Divides each natural number by the number passed in"
   [n]
@@ -38,7 +42,7 @@
 (defn factors
   "Returns the factors of given number"
   [n]
-  (let [factors-below-sqrt (filter #(factorof? % n) (range 1 (inc (Math/sqrt n))))
+  (let [factors-below-sqrt (filter #(factorof? % n) (take (Math/sqrt (if (< n 0) (* n -1) n)) (if (< n 0) negatives natural)))
         factors-above-sqrt (pmap #(/ n %) factors-below-sqrt)]
     (->> (concat factors-below-sqrt factors-above-sqrt) sort distinct)))
 
@@ -49,7 +53,8 @@
 (defn gcf
   "Finds the greatest common factor of the numbers"
   [n m & nums]
-  (->> (concat (list n m) nums) (map factors) (apply u/common) last))
+  (let [commons (->> (concat (list n m) nums) (map factors) (apply u/common))]
+    (if (< (first commons) 0) (first commons) (last commons))))
 
 (def gcf
   "Finds the greatest common factor of the numbers"
@@ -57,9 +62,11 @@
 
 (defn lcm
   "Finds the least common denominator of the nums"
-  [n m & nums]
-  (let [nums (concat (list n m) nums)]
-    (->> (apply gcf nums) (/ (reduce * nums)))))
+  ([n m]
+   (->> (apply gcf [n m]) (/ (reduce * [n m]))))
+  ([n m & nums]
+   (let [nums (concat (list n m) nums)]
+     (reduce lcm nums))))
 
 (defn prime?
   "Checks if a number is prime"
@@ -129,9 +136,6 @@
       acc
       (recur (dec cnt) (* acc cnt)))))
 
-(def negatives
-  "All the negative numbers"
-  (multiples -1))
 (def whole
   "All the whole numbers"
   (of-natural dec))
