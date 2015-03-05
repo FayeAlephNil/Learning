@@ -34,7 +34,7 @@
   [n]
   (== n (->> (str n) reverse (apply str) Integer/parseInt)))
 
-(defn factorof?
+(u/defn-curried factorof?
   "Returns whether or not possible is a factor of the number passed in"
   [possible n]
   (zero? (mod n possible)))
