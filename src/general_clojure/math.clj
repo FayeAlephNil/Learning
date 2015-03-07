@@ -15,9 +15,7 @@
   [n]
   (of-natural #(* % n)))
 
-(def negatives
-  "All the negative numbers"
-  (multiples -1))
+(declare negatives)
 
 (defn divided-by
   "Divides each natural number by the number passed in"
@@ -139,6 +137,9 @@
       acc
       (recur (dec cnt) (* acc cnt)))))
 
+(def negatives
+  "All the negative numbers"
+  (multiples -1))
 (def whole
   "All the whole numbers"
   (of-natural dec))
