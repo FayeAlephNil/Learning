@@ -21,8 +21,9 @@
           body
           (list (apply list 'fn (vec params2) body)))))
 
-(defn do-curried [symbol to-fn params]
+(defn do-curried
   "Helper Func"
+  [symbol1 to-fn params]
   (let [result (split-with (complement vector?) params)
         [[name doc meta] [args & body]] result
         [doc meta] (if (string? doc) [doc meta] [nil doc])
@@ -32,7 +33,7 @@
                   (range 0 (count args))
                   (map arity-for-n)
                   reverse)
-        before (keep identity [symbol name doc])]
+        before (keep identity [symbol1 name doc])]
     (concat before arities)))
 
 (defmacro defn-curried
