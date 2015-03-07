@@ -68,6 +68,10 @@
    (let [nums (concat (list n m) nums)]
      (reduce lcm nums))))
 
+(def lcm
+  "Finds the least common denominator of the nums"
+  (memoize lcm))
+
 (defn prime?
   "Checks if a number is prime"
   [n]
@@ -77,7 +81,6 @@
   "Gives the prime-factors of a number"
   [n]
   (filter prime? (factors n)))
-
 
 (defn factor-pairs
   "Gives the factor pairs for a number"
