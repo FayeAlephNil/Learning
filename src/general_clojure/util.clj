@@ -14,6 +14,7 @@
    (->> (common lst1 lst2) (common (reduce common lsts)))))
 
 (defn- curry
+  "Helper Func"
   [[params1 params2] body]
   (cons (vec params1)
         (if (empty? params2)
@@ -21,6 +22,7 @@
           (list (apply list 'fn (vec params2) body)))))
 
 (defn do-curried [symbol to-fn params]
+  "Helper Func"
   (let [result (split-with (complement vector?) params)
         [[name doc meta] [args & body]] result
         [doc meta] (if (string? doc) [doc meta] [nil doc])
