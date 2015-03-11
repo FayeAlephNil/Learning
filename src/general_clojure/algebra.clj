@@ -6,9 +6,7 @@
   (evaluate [this values] "Evaluates the expression")
   (printexpr [this] "Prints and returns the expresssion"))
 
-
-
-(defrecord Expr [expr]
+(defrecord Expr [expr variables]
   IEval
   (evaluate
     [this values]
@@ -16,3 +14,9 @@
   (printexpr [this] (do (println (:expr this)) (:expr this))))
 
 
+(defn simplify
+  "Simplifies an expression"
+  [expr]
+  expr
+  ;; TODO
+  )
