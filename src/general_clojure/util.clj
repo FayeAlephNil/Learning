@@ -1,5 +1,10 @@
 (ns general-clojure.util)
 
+(defn in?
+  "true if seq contains elm"
+  [lst elm]
+  (some #(= elm %) lst))
+
 (defn common
   "Finds the things in common between lists"
   ([lst1 lst2]
