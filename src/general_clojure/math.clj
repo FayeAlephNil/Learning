@@ -137,6 +137,20 @@
       acc
       (recur (dec cnt) (* acc cnt)))))
 
+(defn fib
+  "Finds the fibonacci of a number"
+  [n]
+  (loop [total 0
+         last 1
+         count 0]
+    (if (< count n)
+      (recur (+ last total) total (+ count 1))
+      total)))
+
+(def fib
+  "Finds the fibonacci of a number"
+  (memoize fib))
+
 (def negatives
   "All the negative numbers"
   (multiples -1))
