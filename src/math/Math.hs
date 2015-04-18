@@ -20,6 +20,8 @@ factorial n
 
 fib :: Int -> Integer
 fib n
-	| n < 0     = ((-1) ^ (-n + 1)) * fib (-n)
+	| n < 0     = nega_fibs !! (-n)
 	| otherwise = fibs !! n
-	where fibs = (0 : 1 : zipWith (+) fibs (tail fibs)) :: [Integer]
+	where
+		fibs = (0 : 1 : zipWith (+) fibs (tail fibs)) :: [Integer]
+		nega_fibs = (0 : 1 : zipWith (-) nega_fibs (tail nega_fibs)) :: [Integer]
