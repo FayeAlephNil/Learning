@@ -1,7 +1,10 @@
 module Math.Math where
-import Data.List
-import Util.Util
 
+-- Haskell Imports
+import Data.Lists
+
+-- My imports
+import Util.Util
 
 -- Divisible
 
@@ -27,12 +30,14 @@ fib n
 		fibs = (0 : 1 : zipWith (+) fibs (tail fibs)) :: [Integer]
 		nega_fibs = (0 : 1 : zipWith (-) nega_fibs (tail nega_fibs)) :: [Integer]
 
+-- Factors
+
 factorof :: Int -> Int -> Bool
 factorof m n = (mod m n) == 0
 
 factors :: Int -> [Int]
 factors n = (nub $ sort $ (below ++ (map (\ x -> (abs n) `quot` x) below)))
-	where below = [x | x <- [1..(floor (sqrt $ fromIntegral $ abs $ n))], n `mod` x == 0]
+	where below = [x | x <- [1..(floor $ sqrt $ fromIntegral $ abs $ n)], n `mod` x == 0]
 
 primeFactors :: Int -> [Int]
 primeFactors = filter prime . factors
