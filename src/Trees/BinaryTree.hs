@@ -26,10 +26,10 @@ treeFromList :: (Ord a) => [a] -> Tree a
 treeFromList = fromListRooted EmptyTree
 
 -- Is not the inverse of treeFromList as the ordering in the List was lost
-treeToList :: (Ord a) => Tree a -> [a]
+treeToList :: Tree a -> [a]
 treeToList EmptyTree = []
 treeToList (Node x left right) = (treeToList left) ++ (treeToList right) ++ [x]
 
 instance Functor Tree where
     fmap f EmptyTree = EmptyTree
-    fmap f (Node x leftsub rightsub) = Node (f x) (fmap f leftsub) (fmap f rightsub)  
+    fmap f (Node x leftsub rightsub) = Node (f x) (fmap f leftsub) (fmap f rightsub)

@@ -1,7 +1,7 @@
 module Math.Math where
 
 -- Haskell Imports
-import Data.Lists
+import Data.List
 
 -- My imports
 import Util.Util
