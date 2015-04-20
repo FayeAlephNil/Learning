@@ -1,35 +1,29 @@
 module Trees.BinaryTree where
 
-data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
+-- Tree Imports
+import Trees.Tree
 
-singleton :: a -> Tree a
-singleton x = Node x EmptyTree EmptyTree
+data BinaryTree a = EmptyTree | Node a (BinaryTree a) (BinaryTree a) deriving (Show, Read, Eq)
+type OrderedBiTree = (Ord a) => BinaryTree a
 
-treeInsert :: (Ord a) => a -> Tree a -> Tree a
-treeInsert x EmptyTree = singleton x
-treeInsert x (Node a left right)
-  | x == a = Node x left right
-  | x < a = Node a (treeInsert x left) right
-  | x > a = Node a left (treeInsert x right)
+instance Functor BinaryTree where
+  fmap f EmptyTree = EmptyTree
+  fmap f (Node x leftsub rightsub) = Node (f x) (fmap f leftsub) (fmap f rightsub)
 
-treeElem :: (Ord a) => a -> Tree a -> Bool
-treeElem _ EmptyTree = False
-treeElem x (Node a left right)
-  | x == a = True
-  | x < a = treeElem x left
-  | x > a = treeElem x right
-
-fromListRooted :: (Ord a) => Tree a -> [a] -> Tree a
-fromListRooted root = foldr treeInsert root
-
-treeFromList :: (Ord a) => [a] -> Tree a
-treeFromList = fromListRooted EmptyTree
-
--- Is not the inverse of treeFromList as the ordering in the List was lost
-treeToList :: Tree a -> [a]
-treeToList EmptyTree = []
-treeToList (Node x left right) = (treeToList left) ++ (treeToList right) ++ [x]
-
-instance Functor Tree where
-    fmap f EmptyTree = EmptyTree
-    fmap f (Node x leftsub rightsub) = Node (f x) (fmap f leftsub) (fmap f rightsub)
+instance (Ord a) => Tree BinaryTree a where
+  singleton x = Node x EmptyTree EmptyTree
+  empty = EmptyTree
+  treeInsert x EmptyTree = singleton x
+  treeInsert x (Node a left right)
+    | x == a = Node x left right
+    | x < a = Node a (treeInsert x left) right
+    | x > a = Node a left (treeInsert x right)
+  treeFromList = fromListRooted EmptyTree
+  -- Is not the inverse of treeFromList as the ordering in the List was lost
+  treeToList EmptyTree = []
+  treeToList (Node x left right) = (treeToList left) ++ (treeToList right) ++ [x]
+  treeElem _ EmptyTree = False
+  treeElem x (Node a left right)
+    | x == a = True
+    | x < a = treeElem x left
+    | x > a = treeElem x right
