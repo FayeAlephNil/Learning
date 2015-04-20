@@ -18,7 +18,6 @@ instance (Ord a) => Tree BinaryTree a where
     | x == a = Node x left right
     | x < a = Node a (treeInsert x left) right
     | x > a = Node a left (treeInsert x right)
-  treeFromList = fromListRooted EmptyTree
   -- Is not the inverse of treeFromList as the ordering in the List was lost
   treeToList EmptyTree = []
   treeToList (Node x left right) = (treeToList left) ++ (treeToList right) ++ [x]

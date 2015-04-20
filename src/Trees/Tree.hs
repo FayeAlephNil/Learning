@@ -7,5 +7,6 @@ class (Functor tree) => Tree tree a where
   fromListRooted :: tree a -> [a] -> tree a
   fromListRooted root = foldr treeInsert root
   treeFromList :: [a] -> tree a
+  treeFromList = fromListRooted empty :: tree a
   treeToList :: tree a -> [a]
   treeElem :: a -> tree a -> Bool
