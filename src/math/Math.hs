@@ -28,10 +28,21 @@ fib_seq n m = (\x -> if x < 0 then nega_list !! (-x) else list !! x)
 		list = (n : m : zipWith (+) list (tail list)) :: [Integer]
 		nega_list = (n : (m-n) : zipWith (-) nega_list (tail nega_list)) :: [Integer]
 
+apply_to_fib :: (Int -> Integer) -> (Integer -> a) -> (Int -> a)
+apply_to_fib gen f = (\x -> f $ gen x)
+
+regen_with_gen :: (Int -> Integer) -> ((Int -> Integer) -> (Integer, Integer)) -> (Int -> Integer)
+regen_with_gen gen f = fib_seq (fst start) (snd start)
+	where start = f gen
+
+regen_with :: (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
+regen_with gen f = regen_with_gen gen (\generator -> ((f $ generator 0), (f $ generator 1)))
+
 fib_period_gen :: (Int -> Integer) -> Integer -> (Int -> Integer)
-fib_period_gen f n = (\x -> gen x `mod` n)
+fib_period_gen f n = apply_to_fib gen mod_n
 	where
-		gen = fib_seq (f 0 `mod` n) (f 1 `mod` n)
+		gen = regen_with f mod_n
+		mod_n x = x `mod` n
 
 fib = fib_seq 0 1
 
@@ -49,18 +60,18 @@ lucas_period = fib_period_gen lucas
 
 -- Factors
 
-factorof :: Int -> Int -> Bool
+factorof :: Integer -> Integer -> Bool
 factorof m n = (mod m n) == 0
 
-factors :: Int -> [Int]
+factors :: Integer -> [Integer]
 factors n = (nub $ sort $ (below ++ (map (\ x -> (abs n) `quot` x) below)))
 	where below = [x | x <- [1..(floor $ sqrt $ fromIntegral $ abs $ n)], n `mod` x == 0]
 
-primeFactors :: Int -> [Int]
+primeFactors :: Integer -> [Integer]
 primeFactors = filter prime . factors
 
-factorPairs :: Int -> [(Int, Int)]
+factorPairs :: Integer -> [(Integer, Integer)]
 factorPairs = combine . factors
 
-prime :: Int -> Bool
+prime :: Integer -> Bool
 prime n = factors n == [1, (abs n)]
