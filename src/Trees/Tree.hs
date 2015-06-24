@@ -10,3 +10,4 @@ class (Functor tree) => Tree tree a where
   treeFromList = fromListRooted empty
   treeToList :: tree a -> [a]
   treeElem :: a -> tree a -> Bool
+  mirror :: tree a -> tree a

@@ -26,3 +26,5 @@ instance (Ord a) => Tree BinaryTree a where
     | x == a = True
     | x < a = treeElem x left
     | x > a = treeElem x right
+  mirror EmptyTree = EmptyTree
+  mirror (Node x left right) = Node x right left
