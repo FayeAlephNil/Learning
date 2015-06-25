@@ -35,8 +35,11 @@ regen_with_gen :: (Int -> Integer) -> ((Int -> Integer) -> (Integer, Integer)) -
 regen_with_gen gen f = fib_seq (fst start) (snd start)
 	where start = f gen
 
+regen_with_index :: Int -> Int -> (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
+regen_with_index n m gen f = regen_with_gen gen (\generator -> ((f $ generator n), (f $ generator m)))
+
 regen_with :: (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
-regen_with gen f = regen_with_gen gen (\generator -> ((f $ generator 0), (f $ generator 1)))
+regen_with = regen_with_index 0 1
 
 fib_period_gen :: (Int -> Integer) -> Integer -> (Int -> Integer)
 fib_period_gen f n = apply_to_fib gen mod_n
