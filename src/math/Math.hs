@@ -27,44 +27,44 @@ factorial n
 
 -- Fibonacci Sequences
 
-fib_seq :: Integer -> Integer -> (Int -> Integer)
-fib_seq n m = (\x -> if x < 0 then nega_list !! (-x) else list !! x)
+fibSeq :: Integer -> Integer -> (Int -> Integer)
+fibSeq n m = (\x -> if x < 0 then negaList !! (-x) else list !! x)
 	where
 		list = (n : m : zipWith (+) list (tail list)) :: [Integer]
-		nega_list = (n : (m-n) : zipWith (-) nega_list (tail nega_list)) :: [Integer]
+		negaList = (n : (m-n) : zipWith (-) negaList (tail negaList)) :: [Integer]
 
-apply_to_fib :: (Int -> Integer) -> (Integer -> a) -> (Int -> a)
-apply_to_fib gen f = (\x -> f $ gen x)
+applyToFib :: (Int -> Integer) -> (Integer -> a) -> (Int -> a)
+applyToFib gen f = (\x -> f $ gen x)
 
-regen_with_gen :: (Int -> Integer) -> ((Int -> Integer) -> (Integer, Integer)) -> (Int -> Integer)
-regen_with_gen gen f = fib_seq (fst start) (snd start)
+regenWithGen :: (Int -> Integer) -> ((Int -> Integer) -> (Integer, Integer)) -> (Int -> Integer)
+regenWithGen gen f = fibSeq (fst start) (snd start)
 	where start = f gen
 
-regen_with_index :: Int -> Int -> (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
-regen_with_index n m gen f = regen_with_gen gen (\generator -> ((f $ generator n), (f $ generator m)))
+regenWithIndex :: Int -> Int -> (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
+regenWithIndex n m gen f = regenWithGen gen (\generator -> ((f $ generator n), (f $ generator m)))
 
-regen_with :: (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
-regen_with = regen_with_index 0 1
+regenWith :: (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
+regenWith = regenWithIndex 0 1
 
-fib_period_gen :: (Int -> Integer) -> Integer -> (Int -> Integer)
-fib_period_gen f n = apply_to_fib gen mod_n
+fibPeriodGen :: (Int -> Integer) -> Integer -> (Int -> Integer)
+fibPeriodGen f n = applyToFib gen modN
 	where
-		gen = regen_with f mod_n
-		mod_n x = x `mod` n
+		gen = regenWith f modN
+		modN x = x `mod` n
 
-fib = fib_seq 0 1
+fib = fibSeq 0 1
 
 fibs = map fib [0..]
-nega_fibs = map fib [0,(-1)..]
+negaFibs = map fib [0,(-1)..]
 
-fib_period = fib_period_gen fib
+fibPeriod = fibPeriodGen fib
 
-lucas = fib_seq 2 1
+lucas = fibSeq 2 1
 
 lucases = map lucas [0..]
-nega_lucases = map lucas [0,(-1)..]
+negaLucases = map lucas [0,(-1)..]
 
-lucas_period = fib_period_gen lucas
+lucasPeriod = fibPeriodGen lucas
 
 -- Factors
 
@@ -86,13 +86,13 @@ prime n = factors n == [1, (abs n)]
 
 -- Stern's Diatomic Series
 
-stern_negative_error = "Stern's Diatomic Sequence doesn't have negative indices"
+sternNegativeError = "Stern's Diatomic Sequence doesn't have negative indices"
 
 stern' :: Int -> Int -> Int
 stern' acc 0 = acc
 stern' acc 1 = stern' (acc + 1) 0
 stern' acc n
-	| n < 0 = error stern_negative_error
+	| n < 0 = error sternNegativeError
 	| even n = stern' acc (n `quot` 2)
 	| otherwise = let
 		m = n-1
@@ -100,14 +100,14 @@ stern' acc n
 
 stern :: Int -> Int
 stern n
-	| n < 0 = error stern_negative_error
+  | n < 0 = error sternNegativeError
 	| otherwise	= sterns !! n
 
 sterns = map (stern' 0) [0..]
 
-stern_fractionals = zipWith (/) double_sterns (tail double_sterns)
+sternFractionals = zipWith (/) doubleSterns (tail doubleSterns)
 	where
-		double_sterns = (map fromIntegral sterns) :: [Double]
+		doubleSterns = (map fromIntegral sterns) :: [Double]
 
-stern_fractional :: Int -> Double
-stern_fractional n = stern_fractionals !! n
+sternFractional :: Int -> Double
+sternFractional n = sternFractionals !! n
