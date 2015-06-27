@@ -88,22 +88,21 @@ prime n = factors n == [1, (abs n)]
 
 sternNegativeError = "Stern's Diatomic Sequence doesn't have negative indices"
 
-stern' :: Int -> Int -> Int
-stern' acc 0 = acc
-stern' acc 1 = stern' (acc + 1) 0
-stern' acc n
-	| n < 0 = error sternNegativeError
-	| even n = stern' acc (n `quot` 2)
-	| otherwise = let
-		m = n-1
-		in stern' (acc + stern' 0 ((m `quot` 2) + 1)) (m `quot` 2)
-
 stern :: Int -> Int
 stern n
   | n < 0 = error sternNegativeError
 	| otherwise	= sterns !! n
 
 sterns = map (stern' 0) [0..]
+	where
+		stern' :: Int -> Int -> Int
+		stern' acc 0 = acc
+		stern' acc 1 = stern' (acc + 1) 0
+		stern' acc n
+			| even n = stern' acc (n `quot` 2)
+			| otherwise = let
+				m = n-1
+				in stern' (acc + stern' 0 ((m `quot` 2) + 1)) (m `quot` 2)
 
 sternFractionals = zipWith (/) doubleSterns (tail doubleSterns)
 	where
