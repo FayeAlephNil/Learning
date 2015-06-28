@@ -2,6 +2,7 @@ module Math.Math where
 
 -- Haskell Imports
 import Data.List
+import Data.Ratio
 
 -- My imports
 import Util.Util
@@ -104,9 +105,7 @@ sterns = map (stern' 0) [0..]
 				m = n-1
 				in stern' (acc + stern' 0 ((m `quot` 2) + 1)) (m `quot` 2)
 
-sternFractionals = zipWith (/) doubleSterns (tail doubleSterns)
-	where
-		doubleSterns = (map fromIntegral sterns) :: [Double]
+sternRatios = zipWith (%) sterns (tail sterns)
 
-sternFractional :: Int -> Double
-sternFractional n = sternFractionals !! n
+sternRatio :: Int -> Ratio Int
+sternRatio n = sternRatios !! n
