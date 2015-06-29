@@ -12,6 +12,11 @@ import Util.Util
 isInt :: RealFrac a => a -> Bool
 isInt x = x == fromInteger (round x)
 
+divide :: Int -> Int -> (Int, Int)
+a `divide` b = (c, b - a * c)
+	where
+		c = a `quot` b
+
 -- Divisible
 
 getAllDivisibles :: Integral a => a -> [a]
@@ -19,6 +24,19 @@ getAllDivisibles n = map (* n) [1..]
 
 getSomeDivisibles :: Integral a => Int -> a -> [a]
 getSomeDivisibles y x = take y (getAllDivisibles x)
+
+-- GCD
+
+gcdDomainError = "gcdAll only operates on lists of 2 or more, you passed in a list of length "
+
+gcdAll :: [Int] -> Int
+gcdAll [] = error $ gcdDomainError ++ show 0
+gcdAll [x] = error $ gcdDomainError ++ show 1
+gcdAll [x, y] = gcd x y
+gcdAll (x:xs) = gcd x $ gcdAll xs
+
+simplifyAll :: [Int] -> [Int]
+simplifyAll = map (\x -> x `quot` (gcdAll xs))
 
 -- Factorial
 factorial :: Integer -> Integer
