@@ -36,7 +36,7 @@ gcdAll [x, y] = gcd x y
 gcdAll (x:xs) = gcd x $ gcdAll xs
 
 simplifyAll :: [Int] -> [Int]
-simplifyAll = map (\x -> x `quot` (gcdAll xs))
+simplifyAll xs = map (\x -> x `quot` (gcdAll xs)) xs
 
 -- Factorial
 factorial :: Integer -> Integer
@@ -46,27 +46,24 @@ factorial n
 
 -- Fibonacci Sequences
 
-fibSeq :: Integer -> Integer -> (Int -> Integer)
+fibSeq :: (Num a) => a -> a -> (Int -> a)
 fibSeq n m = (\x -> if x < 0 then negaList !! (-x) else list !! x)
 	where
-		list = (n : m : zipWith (+) list (tail list)) :: [Integer]
-		negaList = (n : (m-n) : zipWith (-) negaList (tail negaList)) :: [Integer]
+		list = (n : m : zipWith (+) list (tail list))
+		negaList = (n : (m-n) : zipWith (-) negaList (tail negaList))
 
-applyToFib :: (Int -> Integer) -> (Integer -> a) -> (Int -> a)
-applyToFib gen f = (\x -> f $ gen x)
-
-regenWithGen :: (Int -> Integer) -> ((Int -> Integer) -> (Integer, Integer)) -> (Int -> Integer)
+regenWithGen :: (Num a) => (Int -> a) -> ((Int -> a) -> (a, a)) -> (Int -> a)
 regenWithGen gen f = fibSeq (fst start) (snd start)
 	where start = f gen
 
-regenWithIndex :: Int -> Int -> (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
+regenWithIndex :: (Num a) => Int -> Int -> (Int -> a) -> (a -> a) -> Int -> a
 regenWithIndex n m gen f = regenWithGen gen (\generator -> ((f $ generator n), (f $ generator m)))
 
-regenWith :: (Int -> Integer) -> (Integer -> Integer) -> (Int -> Integer)
+regenWith :: (Num a) => (Int -> a) -> (a -> a) -> Int -> a
 regenWith = regenWithIndex 0 1
 
-fibPeriodGen :: (Int -> Integer) -> Integer -> (Int -> Integer)
-fibPeriodGen f n = applyToFib gen modN
+fibPeriodGen :: (Integral a) => (Int -> a) -> a -> Int -> a
+fibPeriodGen f n = modN . gen
 	where
 		gen = regenWith f modN
 		modN x = x `mod` n
