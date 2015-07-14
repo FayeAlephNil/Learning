@@ -12,135 +12,222 @@ import Util.Util
 
 -- Util
 
-neg :: Int -> Int
+-- Returns +1 for a positive number and -1 for a negative number
+neg ::
+	Int -- number to check
+	 -> Int -- +1 if positive -1 if negative
 neg n
 	| n < 0 = (-1)
 	| otherwise = 1
 
-isInt :: RealFrac a => a -> Bool
+-- Checks if a number is an integer
+isInt :: RealFrac a
+	=> a -- Number to check
+	-> Bool -- True if x is an integer, false otherwse
 isInt x = x == fromInteger (round x)
-
-divide :: Int -> Int -> (Int, Int)
-a `divide` b = (c, b - a * c)
-	where
-		c = a `quot` b
 
 random :: Int
 random = 4
 
 -- Divisible
 
-getAllDivisibles :: Integral a => a -> [a]
+-- Gets all the divisibles of a number
+getAllDivisibles :: Integral a
+	=> a -- Number to get divisibles of
+	-> [a] -- Divisibles
 getAllDivisibles n = map (* n) [1..]
 
-getSomeDivisibles :: Integral a => Int -> a -> [a]
+-- Takes some divisibles of a number
+getSomeDivisibles :: Integral a
+	=> Int -- Number to get
+	-> a -- Number to get divisibles of
+	-> [a] -- Divisibles
 getSomeDivisibles y x = take y (getAllDivisibles x)
 
 -- GCD
 
 gcdDomainError = "gcdAll only operates on lists of 2 or more, you passed in a list of length "
 
-gcdAll :: [Int] -> Int
+-- Gets the GCD of multiple numbers
+gcdAll ::
+	[Int] -- List of numbers to get GCD of
+	-> Int -- GCD
 gcdAll [] = error $ gcdDomainError ++ show 0
 gcdAll [x] = error $ gcdDomainError ++ show 1
 gcdAll [x, y] = gcd x y
 gcdAll (x:xs) = gcd x $ gcdAll xs
 
-simplifyAll :: [Int] -> [Int]
+simplifyAll ::
+	[Int] -- List to simplify based on gcd
+	-> [Int] -- List of simplified numbers
 simplifyAll xs = map (\x -> x `quot` (gcdAll xs)) xs
 
 -- Factorial
-factorial :: Integer -> Integer
+
+factorial ::
+	Integer -- Number to get factorial of
+	-> Integer -- Factorial
 factorial n
 	| n >= 0 = product [1..n]
 	| otherwise = error "You passed a number less than 0 to the factorial function"
 
 -- Fibonacci Sequences
 
+-- Returns a function that gets from the first list for positive indices and the
+-- second for negative indices
+listAndNega ::
+	[a] -- List for positive indices
+	-> [a] -- List for negative indices
+	-> (Int -> a) -- Function from integer to element
 listAndNega list negaList = (\x -> if x < 0 then negaList !! (-x) else list !! x)
 
-fibSeq :: (Num a) => a -> a -> (Int -> a)
+-- Creates a fibonacci sequence with the starting numbers
+fibSeq :: (Num a) =>
+	a -- First number
+	-> a -- Second number
+	-> (Int -> a) -- Fibonacci function
 fibSeq n m = listAndNega list negaList
 	where
 		list = (n : m : zipWith (+) list (tail list))
 		negaList = (n : (m-n) : zipWith (-) negaList (tail negaList))
 
-filterFibSeq :: ((b, Int) -> Bool) -> (Int -> b) -> (Int -> (b, Int))
+-- Filters a fibonacci sequence
+filterFibSeq ::
+	((b, Int) -> Bool) -- Function that takes a fib and an index and returns true or false
+	-> (Int -> b) -- Fib to filter
+	-> (Int -> (b, Int)) -- Result that takes an index and returns the filtered with
+											 --a result and regular index. Compose with fst for just result
 filterFibSeq f gen = listAndNega list negaList
 	where
 		list = filter f $ zipWith tuple (map gen [0..]) [0..]
 		negaList = filter f $ zipWith tuple (map gen [0,(-1)..]) [0,(-1)..]
 
-regenWithGen :: (Num a) => (Int -> a) -> ((Int -> a) -> (a, a)) -> (Int -> a)
+-- Regenerates a fib
+regenWithGen :: (Num a) =>
+	(Int -> a) -- Fibonacci Passed in
+	-> ((Int -> a) -> (a, a)) -- Function that takes a fib and returns the starting values
+	-> (Int -> a) -- Resulting fib
 regenWithGen gen f = fibSeq (fst start) (snd start)
 	where start = f gen
 
-regenWithIndex :: (Num a) => Int -> Int -> (Int -> a) -> (a -> a) -> Int -> a
+-- Regens given just two indices. Function only has to take nums and generate nums
+regenWithIndex :: (Num a) =>
+	Int -- First index
+	-> Int -- Second index
+	-> (Int -> a) -- fib to regen
+	-> (a -> a) -- Function to convert from result to new start
+	-> Int -> a -- Resulting fib
 regenWithIndex n m gen f = regenWithGen gen (\generator -> ((f $ generator n), (f $ generator m)))
 
-regenWith :: (Num a) => (Int -> a) -> (a -> a) -> Int -> a
+-- Regens the fib with indices 0 and 1
+regenWith :: (Num a) =>
+	(Int -> a) -- fib to regen
+	-> (a -> a) -- function that transforms result from fib to new starting value
+	-> (Int -> a) -- Resulting fib
 regenWith = regenWithIndex 0 1
 
-fibDigitSummed :: (Integral a) => (Int -> a) -> (Int -> (a, Int))
+-- Gets the fibonaccis whose digits summed equals their index
+fibDigitSummed :: (Integral a)
+	=> (Int -> a) -- Fib to filter
+	-> (Int -> (a, Int)) -- Filtered version of fib where the digits summed equals the regular index
 fibDigitSummed = filterFibSeq (\(x,y) -> ((sum $ digitsRev 10 (fromIntegral x)) == y))
 
-fibPeriodGen :: (Integral a) => (Int -> a) -> a -> Int -> a
+-- Gens a pisano period
+fibPeriodGen :: (Integral a)
+	=> (Int -> a) -- Fib to use
+	-> a -- Number to use to mod
+	-> (Int -> a) -- Resulting function where index will return the modN of the fib
 fibPeriodGen f n = modN . gen
 	where
 		gen = regenWith f modN
 		modN x = x `mod` n
 
+-- Fibonacci Numbers
 fib = fibSeq 0 1
 
+-- Lists of Fib nums
 fibs = map fib [0..]
 negaFibs = map fib [0,(-1)..]
 
+-- Pisano period for Fib numbers
 fibPeriod = fibPeriodGen fib
 
+-- Lucas numbers
 lucas = fibSeq 2 1
 
+-- Lists of Lucas Nums
 lucases = map lucas [0..]
 negaLucases = map lucas [0,(-1)..]
 
+-- Pisano period for Lucas Nums
 lucasPeriod = fibPeriodGen lucas
 
 -- Digits
 
-digitSumList :: Int -> [Int]
+-- Gets a list of the digits of the number with the smallest absolute value where
+-- the digits of said number add up to the number passed in
+digitSumList ::
+	Int -- Number to get the result from
+	-> [Int] -- Digits of result
 digitSumList n = (sum ((digits 10 (sum (digits 10 n))))):(replicate (abs (n `quot` 9)) ((neg n) * 9))
 
-digitSum :: Int -> Int
+-- Gets the number with the smallest absolute value where the digits add up to the
+-- number passed in
+digitSum ::
+	Int -- Number passed in
+	-> Int -- Result
 digitSum = (unDigits 10) . digitSumList
 
 -- Factors
 
-factorof :: Integer -> Integer -> Bool
-factorof m n = (mod m n) == 0
+-- Checks if a number is a factor of another number
+factorof ::
+	Integer -- Number to check
+	-> Integer -- Number to check against
+	-> Bool -- true if m is a factor of n
+factorof m n = (m `mod` n) == 0
 
-factors :: Integer -> [Integer]
+-- Gets the factors of the number passed in
+factors ::
+	Integer -- Number to get factors of
+	-> [Integer] -- Factors of the number
 factors n = (nub $ sort $ (below ++ (map (\ x -> (abs n) `quot` x) below)))
 	where below = [x | x <- [1..(floor $ sqrt $ fromIntegral $ abs $ n)], n `mod` x == 0]
 
-primeFactors :: Integer -> [Integer]
+-- Gets the Prime factors of a number
+primeFactors ::
+	Integer -- Number to get prime factors of
+	-> [Integer] -- Prime factors of the number
 primeFactors = filter prime . factors
 
-factorPairs :: Integer -> [(Integer, Integer)]
+-- Get the factorPairs of a number
+factorPairs ::
+	Integer -- Number to get factor pairs of
+	-> [(Integer, Integer)] -- Factor Pairs
 factorPairs = combine . factors
 
-prime :: Integer -> Bool
+-- Checks if a number is prime
+prime ::
+	Integer -- Number to check
+	-> Bool -- True if the number is prime, else False
 prime n = factors n == [1, (abs n)]
 
 -- Stern's Diatomic Series
 
 sternNegativeError = "Stern's Diatomic Sequence doesn't have negative indices"
 
-stern :: Int -> Int
+-- Takes an index and gets the resulting number in stern's diatomic series
+stern ::
+	Int -- Index
+	-> Int -- Result
 stern n
   | n < 0 = error sternNegativeError
 	| otherwise	= sterns !! n
 
+-- List of sterns diatomic Series
 sterns = map (stern' 0) [0..]
 	where
+		-- Tail Recursive Stern function
 		stern' :: Int -> Int -> Int
 		stern' acc 0 = acc
 		stern' acc 1 = stern' (acc + 1) 0
@@ -150,7 +237,11 @@ sterns = map (stern' 0) [0..]
 				m = n-1
 				in stern' (acc + stern' 0 ((m `quot` 2) + 1)) (m `quot` 2)
 
+-- List of ratios of the nth number in stern's series over the n + 1 number in the series
 sternRatios = zipWith (%) sterns (tail sterns)
 
-sternRatio :: Int -> Ratio Int
+-- Gets the ratio of the nth number in the series and the n + 1 number in the series
+sternRatio ::
+	Int -- Index
+	-> Ratio Int -- Ratio
 sternRatio n = sternRatios !! n
