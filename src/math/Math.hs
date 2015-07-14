@@ -173,7 +173,7 @@ k # n = ((k-1) `mod` n) + 1
 sumDigits ::
 	Int -- Number to get digits from
 	-> Int -- digits summed up
-sumDigits = sum . (digits 10)
+sumDigits = sum . (digitsRev 10)
 
 -- Gets a list of the digits of the number with the smallest absolute value where
 -- the digits of said number add up to the number passed in
