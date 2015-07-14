@@ -3,6 +3,7 @@ module Math.Math where
 --- Haskell Imports
 import Data.List
 import Data.Ratio
+import Data.Function
 
 --- Package imports
 import Data.Digits
@@ -13,9 +14,9 @@ import Util.Util
 --- Util
 
 -- Returns +1 for a positive number and -1 for a negative number
-neg ::
-	Int -- number to check
-	 -> Int -- +1 if positive -1 if negative
+neg :: (Num a, Ord a)
+ 	=> a -- number to check
+	-> a -- +1 if positive -1 if negative
 neg n
 	| n < 0 = (-1)
 	| otherwise = 1
@@ -24,10 +25,13 @@ neg n
 isInt :: RealFrac a
 	=> a -- Number to check
 	-> Bool -- True if x is an integer, false otherwse
-isInt x = x == fromInteger (round x)
+isInt x = x == fromIntegral (round x)
 
 random :: Int
 random = 4
+
+divide :: (Integral a) => a -> a -> Double
+divide = (/) `on` fromIntegral
 
 --- Divisible
 
@@ -62,11 +66,11 @@ simplifyAll ::
 	-> [Int] -- List of simplified numbers
 simplifyAll xs = map (\x -> x `quot` (gcdAll xs)) xs
 
--- Factorial
+--- Factorial
 
-factorial ::
-	Integer -- Number to get factorial of
-	-> Integer -- Factorial
+factorial :: (Integral a)
+	=> a -- Number to get factorial of
+	-> a -- Factorial
 factorial n
 	| n >= 0 = product [1..n]
 	| otherwise = error "You passed a number less than 0 to the factorial function"
@@ -195,46 +199,57 @@ minDigitSum = (unDigits 10) . minDigitSumList
 -- digitSum (a - b) == digitSum ((digitSum a) - (digitSum b))
 -- digitSum (ab) == digitsum ((digitSum a) * (digitSum b))
 -- digitSum (polynomial a) == digitSum (polynomial (digitSum a))
-digitSum ::
-	Int -- Original number
-	-> Int -- Single Digit number
+digitSum :: (Integral a)
+	=> a -- Original number
+	-> a -- Single Digit number
 digitSum n = (neg n) * (n # 9)
 
--- Factors
+--- Factors
 
 -- Checks if a number is a factor of another number
-factorof ::
-	Integer -- Number to check
-	-> Integer -- Number to check against
+factorof :: (Integral a)
+	=> a -- Number to check
+	-> a -- Number to check against
 	-> Bool -- true if m is a factor of n
 factorof m n = (m `mod` n) == 0
 
 -- Gets the factors of the number passed in
-factors ::
-	Integer -- Number to get factors of
-	-> [Integer] -- Factors of the number
+factors :: (Integral a) =>
+	a -- Number to get factors of
+	-> [a] -- Factors of the number
 factors n = (nub $ sort $ (below ++ (map (\ x -> (abs n) `quot` x) below)))
 	where below = [x | x <- [1..(floor $ sqrt $ fromIntegral $ abs $ n)], n `mod` x == 0]
 
 -- Gets the Prime factors of a number
-primeFactors ::
-	Integer -- Number to get prime factors of
-	-> [Integer] -- Prime factors of the number
+primeFactors :: (Integral a)
+	=> a -- Number to get prime factors of
+	-> [a] -- Prime factors of the number
 primeFactors = filter prime . factors
 
 -- Get the factorPairs of a number
-factorPairs ::
-	Integer -- Number to get factor pairs of
-	-> [(Integer, Integer)] -- Factor Pairs
+factorPairs :: (Integral a)
+	=> a -- Number to get factor pairs of
+	-> [(a, a)] -- Factor Pairs
 factorPairs = combine . factors
 
 -- Checks if a number is prime
-prime ::
-	Integer -- Number to check
+prime :: (Integral a)
+	=> a -- Number to check
 	-> Bool -- True if the number is prime, else False
 prime n = factors n == [1, (abs n)]
 
--- Stern's Diatomic Series
+divisor :: (Integral a)
+	=> a -- Number to get factors from
+	-> a -- Summed Factors
+divisor = sum . factors
+
+-- Divisor n / n
+charRatio :: (Integral a)
+	=> a -- Number to get ratio of
+	-> Double -- Ratio
+charRatio n = (divisor n) `divide` n
+
+--- Stern's Diatomic Series
 
 sternNegativeError = "Stern's Diatomic Sequence doesn't have negative indices"
 
