@@ -1,16 +1,16 @@
 module Math.Math where
 
--- Haskell Imports
+--- Haskell Imports
 import Data.List
 import Data.Ratio
 
--- Package imports
+--- Package imports
 import Data.Digits
 
--- My imports
+--- My imports
 import Util.Util
 
--- Util
+--- Util
 
 -- Returns +1 for a positive number and -1 for a negative number
 neg ::
@@ -29,7 +29,7 @@ isInt x = x == fromInteger (round x)
 random :: Int
 random = 4
 
--- Divisible
+--- Divisible
 
 -- Gets all the divisibles of a number
 getAllDivisibles :: Integral a
@@ -71,7 +71,7 @@ factorial n
 	| n >= 0 = product [1..n]
 	| otherwise = error "You passed a number less than 0 to the factorial function"
 
--- Fibonacci Sequences
+--- Fibonacci Sequences
 
 -- Returns a function that gets from the first list for positive indices and the
 -- second for negative indices
@@ -162,21 +162,43 @@ negaLucases = map lucas [0,(-1)..]
 -- Pisano period for Lucas Nums
 lucasPeriod = fibPeriodGen lucas
 
--- Digits
+--- Modulo arithmetic
+
+(#) :: (Integral a) => a -> a -> a
+k # n = ((k-1) `mod` n) + 1
+
+--- Digits
+
+-- Gets all the digits of a number added together
+sumDigits ::
+	Int -- Number to get digits from
+	-> Int -- digits summed up
+sumDigits = sum . (digits 10)
 
 -- Gets a list of the digits of the number with the smallest absolute value where
 -- the digits of said number add up to the number passed in
-digitSumList ::
+minDigitSumList ::
 	Int -- Number to get the result from
 	-> [Int] -- Digits of result
-digitSumList n = (sum ((digits 10 (sum (digits 10 n))))):(replicate (abs (n `quot` 9)) ((neg n) * 9))
+minDigitSumList n = (sumDigits $ sumDigits n):(replicate (abs (n `quot` 9)) ((neg n) * 9))
 
 -- Gets the number with the smallest absolute value where the digits add up to the
 -- number passed in
-digitSum ::
+minDigitSum ::
 	Int -- Number passed in
 	-> Int -- Result
-digitSum = (unDigits 10) . digitSumList
+minDigitSum = (unDigits 10) . minDigitSumList
+
+-- Sums a number's digits until it is a single digit number
+-- digitSum 9n == 9
+-- digitSum (a + b) == digitSum ((digitSum a) + (digitSum b))
+-- digitSum (a - b) == digitSum ((digitSum a) - (digitSum b))
+-- digitSum (ab) == digitsum ((digitSum a) * (digitSum b))
+-- digitSum (polynomial a) == digitSum (polynomial (digitSum a))
+digitSum ::
+	Int -- Original number
+	-> Int -- Single Digit number
+digitSum n = (neg n) * (n # 9)
 
 -- Factors
 
