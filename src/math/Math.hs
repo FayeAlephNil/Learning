@@ -107,7 +107,7 @@ lucasPeriod = fibPeriodGen lucas
 -- Digits
 
 digitSumList :: Int -> [Int]
-digitSumList n = (head (digits 10 n)):(replicate (abs (n `quot` 9)) ((neg n) * 9))
+digitSumList n = (last ((digits 10 (sum (digits 10 n))))):(replicate (abs (n `quot` 9)) ((neg n) * 9))
 
 digitSum :: Int -> Int
 digitSum = (unDigits 10) . digitSumList
