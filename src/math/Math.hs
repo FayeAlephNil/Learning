@@ -4,10 +4,18 @@ module Math.Math where
 import Data.List
 import Data.Ratio
 
+-- Package imports
+import Data.Digits
+
 -- My imports
 import Util.Util
 
 -- Util
+
+neg :: Int -> Int
+neg n
+	| n < 0 = (-1)
+	| otherwise = 1
 
 isInt :: RealFrac a => a -> Bool
 isInt x = x == fromInteger (round x)
@@ -16,6 +24,9 @@ divide :: Int -> Int -> (Int, Int)
 a `divide` b = (c, b - a * c)
 	where
 		c = a `quot` b
+
+random :: Int
+random = 4
 
 -- Divisible
 
@@ -46,11 +57,19 @@ factorial n
 
 -- Fibonacci Sequences
 
+listAndNega list negaList = (\x -> if x < 0 then negaList !! (-x) else list !! x)
+
 fibSeq :: (Num a) => a -> a -> (Int -> a)
-fibSeq n m = (\x -> if x < 0 then negaList !! (-x) else list !! x)
+fibSeq n m = listAndNega list negaList
 	where
 		list = (n : m : zipWith (+) list (tail list))
 		negaList = (n : (m-n) : zipWith (-) negaList (tail negaList))
+
+filterFibSeq :: ((b, Int) -> Bool) -> (Int -> b) -> (Int -> (b, Int))
+filterFibSeq f gen = listAndNega list negaList
+	where
+		list = filter f $ zipWith tuple (map gen [0..]) [0..]
+		negaList = filter f $ zipWith tuple (map gen [0,(-1)..]) [0,(-1)..]
 
 regenWithGen :: (Num a) => (Int -> a) -> ((Int -> a) -> (a, a)) -> (Int -> a)
 regenWithGen gen f = fibSeq (fst start) (snd start)
@@ -61,6 +80,9 @@ regenWithIndex n m gen f = regenWithGen gen (\generator -> ((f $ generator n), (
 
 regenWith :: (Num a) => (Int -> a) -> (a -> a) -> Int -> a
 regenWith = regenWithIndex 0 1
+
+fibDigitSummed :: (Integral a) => (Int -> a) -> (Int -> (a, Int))
+fibDigitSummed = filterFibSeq (\(x,y) -> ((sum $ digitsRev 10 (fromIntegral x)) == y))
 
 fibPeriodGen :: (Integral a) => (Int -> a) -> a -> Int -> a
 fibPeriodGen f n = modN . gen
@@ -81,6 +103,14 @@ lucases = map lucas [0..]
 negaLucases = map lucas [0,(-1)..]
 
 lucasPeriod = fibPeriodGen lucas
+
+-- Digits
+
+digitSumList :: Int -> [Int]
+digitSumList n = (head (digits 10 n)):(replicate (abs (n `quot` 9)) ((neg n) * 9))
+
+digitSum :: Int -> Int
+digitSum = (unDigits 10) . digitSumList
 
 -- Factors
 

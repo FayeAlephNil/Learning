@@ -13,3 +13,6 @@ groupsOf n xs = take n xs : groupsOf n (drop n xs)
 split :: [a] -> [[a]]
 split [] = []
 split xs = groupsOf ((length xs) `quot` 2) xs
+
+tuple :: a -> b -> (a, b)
+tuple a b = (a,b) 
