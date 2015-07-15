@@ -208,8 +208,8 @@ digitSum n = (neg n) * (n # 9)
 
 -- Checks if a number is a factor of another number
 factorof :: (Integral a)
-	=> a -- Number to check
-	-> a -- Number to check against
+	=> a -- Original Number
+	-> a -- Possible Factor
 	-> Bool -- true if m is a factor of n
 factorof m n = (m `mod` n) == 0
 
