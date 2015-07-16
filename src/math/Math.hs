@@ -30,6 +30,7 @@ isInt x = x == fromIntegral (round x)
 random :: Int
 random = 4
 
+-- id = (/1)
 divide :: (Integral a) => a -> a -> Double
 divide = (/) `on` fromIntegral
 
@@ -174,6 +175,7 @@ k # n = ((k-1) `mod` n) + 1
 --- Digits
 
 -- Gets all the digits of a number added together
+-- No ID, information is lost
 sumDigits ::
 	Int -- Number to get digits from
 	-> Int -- digits summed up
@@ -181,19 +183,22 @@ sumDigits = sum . (digitsRev 10)
 
 -- Gets a list of the digits of the number with the smallest absolute value where
 -- the digits of said number add up to the number passed in
+-- id = sum . minDigitSumList
 minDigitSumList ::
 	Int -- Number to get the result from
 	-> [Int] -- Digits of result
-minDigitSumList n = (sumDigits $ sumDigits n):(replicate (abs (n `quot` 9)) ((neg n) * 9))
+minDigitSumList n = (digitSum n):(replicate (abs (n `quot` 9)) ((neg n) * 9))
 
 -- Gets the number with the smallest absolute value where the digits add up to the
 -- number passed in
+-- id = sumDigits . minDigitSum
 minDigitSum ::
 	Int -- Number passed in
 	-> Int -- Result
 minDigitSum = (unDigits 10) . minDigitSumList
 
 -- Sums a number's digits until it is a single digit number
+-- No ID, information is lost
 -- digitSum 9n == 9
 -- digitSum (a + b) == digitSum ((digitSum a) + (digitSum b))
 -- digitSum (a - b) == digitSum ((digitSum a) - (digitSum b))
