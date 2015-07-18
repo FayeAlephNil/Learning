@@ -231,6 +231,16 @@ primeFactors :: (Integral a)
 	-> [a] -- Prime factors of the number
 primeFactors = filter prime . factors
 
+factorization :: (Integral a)
+	=> a -- Number to get factorization of
+	-> [(a, a)] -- Factorization of the number
+factorization n
+	| prime n = [(n,1)]
+	| otherwise = sumSame (factorizations !! 0) (factorizations !! 1)
+	where
+		factorsN = factors n
+		factorizations = map factorization [(factorsN !! 1), (factorsN !! ((length factorsN) - 2))]
+
 -- Get the factorPairs of a number
 factorPairs :: (Integral a)
 	=> a -- Number to get factor pairs of

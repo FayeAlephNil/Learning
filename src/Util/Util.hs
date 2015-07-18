@@ -16,3 +16,11 @@ split xs = groupsOf ((length xs) `quot` 2) xs
 
 tuple :: a -> b -> (a, b)
 tuple a b = (a,b) 
+
+sumSame :: (Integral a) => [(a,a)] -> [(a,a)] -> [(a,a)]
+sumSame [] ys = ys
+sumSame xs [] = xs
+sumSame (x:xs) yss@(y:ys)
+	| (fst x) == (fst y) = ((fst x), (snd x + snd y)):(sumSame xs ys)
+	| otherwise = (fst x, snd x):(sumSame xs yss)
+
