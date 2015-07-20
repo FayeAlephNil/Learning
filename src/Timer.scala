@@ -1,23 +1,49 @@
-class Timer(callback: () => Unit, time: Int) {
+import scala.collection.mutable
+
+object Timers {
+	var timers: mutable.MutableList[Timer] = mutable.MutableList()
+
+	def addTimer(timer: Timer): Unit = {
+		timers += timer
+	}
 
 	new Thread(new Runnable {
 		override def run(): Unit = {
+			var passed = 0
 			while (true) {
-				if (running) {
-					Thread sleep time
-					callback()
-				}
+				timers.foreach(timer => {
+					if (timer.started && passed % timer.time == 0) {
+						timer.run
+					}
+				})
+
+				Thread.sleep(1)
+				passed += 1
 			}
 		}
 	}).start()
+}
 
-	var running = false
+class Timer(callback: Timer => Unit, _time: Int) {
+	Timers.addTimer(this)
 
-	def start: Unit = {
-		running = true
+	private var _started = false
+	def started = _started
+
+	def time = _time
+
+	def run: Unit = {
+		callback(this)
 	}
 
-	def stop: Unit = {
-		running = false
+	def start: Timer = {
+		_started = true
+		this
+	}
+
+	def stop: Timer = {
+		_started = false
+		this
 	}
 }
+
