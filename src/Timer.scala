@@ -2,12 +2,14 @@ class Timer(callback: () => Unit, time: Int) {
 
 	new Thread(new Runnable {
 		override def run(): Unit = {
-			while (running) {
-				callback()
-				this.wait(time)
+			while (true) {
+				if (running) {
+					Thread sleep time
+					callback()
+				}
 			}
 		}
-	})
+	}).start()
 
 	var running = false
 
