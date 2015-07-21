@@ -5,27 +5,28 @@ import striking.learning.Implicits
 import scala.collection.LinearSeq
 import Implicits._
 
-class Fib(n: BigInt, m: BigInt) {
-	private def new_fibs(x:Int):(BigInt,BigInt) = if (x == 0) (n, m) else if (x < 0) {
-		val n = -x
-		val result = BigInt(-1).pow(n + 1) * get(n)
-		(result, 0)
-	} else {
-		val (a,b) = getTuple(x/2)
-		val p = (2*b+a)*a
-		val q = a*a + b*b
-		if(x % 2 == 0) (p,q) else (p+q,p)
-	}
 
-	private def getTuple: (Int => (BigInt, BigInt)) = listTuple.andNega(negaListTuple)
+object FibHelper {
+	def newFibsFibDefault(fib: Fib, x: Int): BigInt = {
+		if (x == 0) {
+			fib.n
+		} else if (x == 1) {
+			fib.m
+		} else if (x < 0) {
+			fib.get(x + 2) - fib.get(x + 1)
+		} else {
+			fib.get(x-1) + fib.get(x-2)
+		}
+	}
+}
+
+case class Fib(n: BigInt, m: BigInt, newFibsFib: (Fib, Int) => BigInt = FibHelper.newFibsFibDefault) extends Cloneable {
+	private val newFibs: Int => BigInt = newFibsFib(this, _)
 
 	def get: (Int => BigInt) = list.andNega(negaList)
 
-	private val listTuple: LinearSeq[(BigInt, BigInt)] = Reference.whole.map(new_fibs)
-	private val negaListTuple: LinearSeq[(BigInt, BigInt)] = Reference.negative.map(new_fibs)
-
-	def list: LinearSeq[BigInt] = listTuple.map(tuple => tuple._1)
-	def negaList: LinearSeq[BigInt] = negaListTuple.map(tuple => tuple._1)
+	def list: LinearSeq[BigInt] = Reference.whole.map(newFibs)
+	def negaList: LinearSeq[BigInt] = Reference.negative.map(newFibs)
 
 	def regenWithGen(regen: Fib => (BigInt, BigInt)): Fib = {
 		val (a, b) = regen(this)
@@ -39,4 +40,18 @@ class Fib(n: BigInt, m: BigInt) {
 	}
 
 	def regenWith: (BigInt => BigInt) => Fib = regenWithIndex(0, 1, _)
+
+	def map(f: BigInt => BigInt): Fib = {
+		def nextFibsFib(fib: Fib, x: Int): BigInt = {
+			f(newFibsFib(fib, x))
+		}
+		Fib(n, m, nextFibsFib)
+	}
+
+	def pisano(y: Int): Fib = {
+		def modY(x: BigInt): BigInt = {
+			x % y
+		}
+		map(modY)
+	}
 }

@@ -10,5 +10,5 @@ object Learning extends App {
 		println("3000 milliseconds have passed, Adios")
 		timer.stop
 	}, 3000).start
-	new Fib(0, 1).negaList.take(10).foreach(println)
+	Fib(0, 1).pisano(7).list.take(32).foreach(println)
 }
