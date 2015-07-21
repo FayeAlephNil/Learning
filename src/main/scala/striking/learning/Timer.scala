@@ -1,7 +1,9 @@
-import scala.collection.mutable
+package striking.learning
+
+import scala.collection.mutable.ArrayBuffer
 
 object Timers {
-	var timers: mutable.MutableList[Timer] = mutable.MutableList()
+	var timers = new ArrayBuffer[Timer]()
 
 	def addTimer(timer: Timer): Unit = {
 		timers += timer
@@ -12,7 +14,7 @@ object Timers {
 			var passed = 0
 			while (true) {
 				timers.foreach(timer => {
-					if (timer.started && passed % timer.time == 0) {
+					if (timer.started && (passed % timer.time == 0) && (passed != 0)) {
 						timer.run
 					}
 				})

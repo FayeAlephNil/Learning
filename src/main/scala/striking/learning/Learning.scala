@@ -1,3 +1,4 @@
+package striking.learning
 object Learning extends App {
 	println("Hello World!")
 	new Timer(timer => println("1000 milliseconds have passed"), 1000).start
