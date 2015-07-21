@@ -5,7 +5,7 @@ object Implicits {
 		def andNega(negaList: Seq[A]): (Int => A) = {
 			(x: Int) => {
 				if (x < 0) {
-					negaList.apply(x)
+					negaList.apply(-x)
 				} else {
 					xs.apply(x)
 				}
