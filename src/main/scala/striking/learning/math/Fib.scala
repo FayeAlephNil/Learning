@@ -27,12 +27,16 @@ class Fib(n: BigInt, m: BigInt) {
 	def list: LinearSeq[BigInt] = listTuple.map(tuple => tuple._1)
 	def negaList: LinearSeq[BigInt] = negaListTuple.map(tuple => tuple._1)
 
-	def regenWithGen(regen: Fib => (Int, Int)): Fib = {
+	def regenWithGen(regen: Fib => (BigInt, BigInt)): Fib = {
 		val (a, b) = regen(this)
 		new Fib(a, b)
 	}
 
-	def regenWithIndex(a: Int, b: Int): Fib = {
-
+	def regenWithIndex(a: Int, b: Int, regen: (BigInt => BigInt)): Fib = {
+		regenWithGen(gen => {
+			(regen(gen.get(a)), regen(gen.get(b)))
+		})
 	}
+
+	def regenWith: (BigInt => BigInt) => Fib = regenWithIndex(0, 1, _)
 }
