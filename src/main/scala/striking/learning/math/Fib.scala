@@ -1,6 +1,5 @@
 package striking.learning.math
 
-import striking.learning.Implicits
 import striking.learning.Implicits._
 
 import scala.collection.LinearSeq
