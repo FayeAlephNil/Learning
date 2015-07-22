@@ -42,6 +42,14 @@ object MathImps {
 				1
 			}
 		}
+
+		def factorial: Int = {
+			(1 to x).product
+		}
+
+		def even: Boolean = {
+			x % 2 == 0
+		}
 	}
 
 	implicit class IntDigits(x: Int) {
