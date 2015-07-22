@@ -13,6 +13,16 @@ object Implicits {
 				}
 			}
 		}
+
+		def combined: List[(A, A)] = {
+			if (xs == Seq[A]()) {
+				List[(A, A)]()
+			} else if (xs.length == 1) {
+				(xs.head, xs.head) :: List[(A, A)]()
+			} else {
+				(xs.head, xs.last) :: xs.tail.init.combined
+			}
+		}
 	}
 
 	implicit class SeqIntImplicit(xs: Seq[Int]) {
@@ -20,6 +30,27 @@ object Implicits {
 			xs.reduceLeft((a, b) => {
 				(a * 10) + b
 			})
+		}
+	}
+
+	implicit class ListIntTupleImplicit(xss: List[(Int, Int)]) {
+		def sumSame(yss: List[(Int, Int)]): List[(Int, Int)] = {
+			if (xss.isEmpty) {
+				yss
+			} else if (yss.isEmpty) {
+				xss
+			} else {
+				val x = xss.head
+				val xs = xss.tail
+				val y = yss.head
+				val ys = yss.tail
+
+				if (x._1 == y._1) {
+					(x._1, x._2 + y._2) :: xs.sumSame(ys)
+				} else {
+					(x._1, x._2) :: xs.sumSame(yss)
+				}
+			}
 		}
 	}
 
@@ -65,6 +96,49 @@ object Implicits {
 
 		def minDigitSum: Int = {
 			x.minDigitSumList.unDigits
+		}
+
+		def factorof(y: Int): Boolean = {
+			y % x == 0
+		}
+
+		def factors: List[Int] = {
+			val limit: Int = Math.sqrt(Math.abs(x)).toInt
+
+			val below = (1 to limit).filter { divisor =>
+				divisor factorof x
+			}
+
+			val upper = below.map { n =>
+				x / Math.abs(n)
+			}
+
+			(below ++ upper.reverse).distinct.toList
+		}
+
+		def prime: Boolean = {
+			x.factors == 1 :: Math.abs(x) :: Nil
+		}
+
+		def primeFactors: List[Int] = {
+			x.factors.filter(_.prime)
+		}
+
+		def factorPairs: List[(Int, Int)] = {
+			x.factors.combined.toList
+		}
+
+		def factorization: List[(Int, Int)] = {
+			if (x.prime) {
+				(x, 1) :: List[(Int, Int)]()
+			} else {
+				val factorsX = x.factors
+				val factorsXNeeded: List[Int] = factorsX.apply(1) :: factorsX.apply(factorsX.length - 2) :: List[Int]()
+
+				val factorizations = factorsXNeeded.map(_.factorization)
+
+				factorizations.head.sumSame(factorizations.last).toList
+			}
 		}
 	}
 }
