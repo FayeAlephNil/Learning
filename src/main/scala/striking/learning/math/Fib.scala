@@ -5,22 +5,27 @@ import striking.learning.Implicits
 import scala.collection.LinearSeq
 import Implicits._
 
-
-object FibHelper {
-	def newFibsFibDefault(fib: Fib, x: Int): BigInt = {
-		if (x == 0) {
-			fib.n
-		} else if (x == 1) {
-			fib.m
-		} else if (x < 0) {
-			fib.get(x + 2) - fib.get(x + 1)
-		} else {
-			fib.get(x-1) + fib.get(x-2)
+case class Fib(n: BigInt, m: BigInt, _newFibsFib: (Fib, Int) => BigInt = null) extends Cloneable {
+	private val FibHelper = {
+		class FibHelper {
+			def newFibsFibDefault(fib: Fib, x: Int): BigInt = {
+				if (x == 0) {
+					fib.n
+				} else if (x == 1) {
+					fib.m
+				} else if (x < 0) {
+					fib.get(x + 2) - fib.get(x + 1)
+				} else {
+					fib.get(x - 1) + fib.get(x - 2)
+				}
+			}
 		}
-	}
-}
 
-case class Fib(n: BigInt, m: BigInt, newFibsFib: (Fib, Int) => BigInt = FibHelper.newFibsFibDefault) extends Cloneable {
+		new FibHelper()
+	}
+
+	val newFibsFib = if (_newFibsFib == null) FibHelper.newFibsFibDefault _ else _newFibsFib
+
 	private val newFibs: Int => BigInt = newFibsFib(this, _)
 
 	def get: (Int => BigInt) = list.andNega(negaList)
