@@ -38,9 +38,9 @@ case class Fib(n: BigInt, m: BigInt, __newFibs: (Fib, Int) => BigInt = null) ext
 	}
 
 	def regenWithIndex(a: Int, b: Int, regen: (BigInt => BigInt)): Fib = {
-		regenWithGen(gen => {
+		regenWithGen { gen =>
 			(regen(gen.get(a)), regen(gen.get(b)))
-		})
+		}
 	}
 
 	def regenWith: (BigInt => BigInt) => Fib = regenWithIndex(0, 1, _)
