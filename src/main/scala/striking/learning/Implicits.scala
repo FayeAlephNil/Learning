@@ -1,5 +1,7 @@
 package striking.learning
 
+import scala.annotation.tailrec
+
 object Implicits {
 	implicit class SeqImplicit[A](xs: Seq[A]) {
 		def andNega(negaList: Seq[A]): (Int => A) = {
@@ -34,24 +36,22 @@ object Implicits {
 			}
 		}
 
-		def digitsRev: List[Int] = {
-			val rest: Int = x / 10
-			val lastDigit: Int = x % 10
-			x match {
-				case 0 => List[Int]()
-				case _ => lastDigit :: rest.digitsRev
-			}
-		}
-
-
 		def digits: List[Int] = {
-			val digitsRev = x.digitsRev
-			digitsRev.reverse
+			@tailrec
+			def digitsTail(a: Int, result: List[Int]): List[Int] = {
+				val rest: Int = a / 10
+				val lastDigit: Int = a % 10
+				a match {
+					case 0 => result
+					case _ => digitsTail(rest, lastDigit :: result)
+				}
+			}
+			digitsTail(x, List[Int]())
 		}
 
 
 		def sumDigits: Int = {
-			x.digitsRev.sum
+			x.digits.sum
 		}
 
 		def digitSum: Int = {
