@@ -21,5 +21,13 @@ object Implicits {
 				(xs.head, xs.last) :: xs.tail.init.combined
 			}
 		}
+
+		def zipWith[B, C](f: (A, B) => C, ys: Seq[B]): List[C] = {
+			if (xs.isEmpty || ys.isEmpty) {
+				List[C]()
+			} else {
+				f(xs.head, ys.head) :: xs.tail.zipWith(f, ys.tail)
+			}
+		}
 	}
 }
