@@ -30,8 +30,8 @@ case class Fib(n: BigInt, m: BigInt, _newFibsFib: (Fib, Int) => BigInt = null) e
 
 	def get: (Int => BigInt) = list.andNega(negaList)
 
-	def list: LinearSeq[BigInt] = Reference.whole.map(newFibs)
-	def negaList: LinearSeq[BigInt] = Reference.negative.map(newFibs)
+	def list: LinearSeq[BigInt] = MathRef.whole.map(newFibs)
+	def negaList: LinearSeq[BigInt] = MathRef.negative.map(newFibs)
 
 	def regenWithGen(regen: Fib => (BigInt, BigInt)): Fib = {
 		val (a, b) = regen(this)

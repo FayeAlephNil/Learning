@@ -1,6 +1,6 @@
 package striking.learning
 
-import striking.learning.math.Fib
+import striking.learning.math.MathRef
 
 object Learning extends App {
 	println("Hello World!")
@@ -10,5 +10,5 @@ object Learning extends App {
 		println("3000 milliseconds have passed, Adios")
 		timer.stop
 	}, 3000).start
-	Fib(0, 1).pisano(7).list.take(32).foreach(println)
+	MathRef.FibNumbers.pisano(7).list.take(32).foreach(println)
 }
