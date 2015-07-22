@@ -5,10 +5,10 @@ import striking.learning.Implicits
 import scala.collection.LinearSeq
 import Implicits._
 
-case class Fib(n: BigInt, m: BigInt, _newFibsFib: (Fib, Int) => BigInt = null) extends Cloneable {
+case class Fib(n: BigInt, m: BigInt, __newFibs: (Fib, Int) => BigInt = null) extends Cloneable {
 	private val FibHelper = {
 		class FibHelper {
-			def newFibsFibDefault(fib: Fib, x: Int): BigInt = {
+			def newFibsDefault(fib: Fib, x: Int): BigInt = {
 				if (x == 0) {
 					fib.n
 				} else if (x == 1) {
@@ -24,9 +24,9 @@ case class Fib(n: BigInt, m: BigInt, _newFibsFib: (Fib, Int) => BigInt = null) e
 		new FibHelper()
 	}
 
-	val newFibsFib = if (_newFibsFib == null) FibHelper.newFibsFibDefault _ else _newFibsFib
+	val _newFibs = if (__newFibs == null) FibHelper.newFibsDefault _ else __newFibs
 
-	private val newFibs: Int => BigInt = newFibsFib(this, _)
+	private val newFibs: Int => BigInt = _newFibs(this, _)
 
 	def get: (Int => BigInt) = list.andNega(negaList)
 
@@ -48,7 +48,7 @@ case class Fib(n: BigInt, m: BigInt, _newFibsFib: (Fib, Int) => BigInt = null) e
 
 	def map(f: BigInt => BigInt): Fib = {
 		def nextFibsFib(fib: Fib, x: Int): BigInt = {
-			f(newFibsFib(fib, x))
+			f(_newFibs(fib, x))
 		}
 		Fib(n, m, nextFibsFib)
 	}
