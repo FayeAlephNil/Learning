@@ -1,7 +1,5 @@
 package striking.learning
 
-import scala.annotation.tailrec
-
 object Implicits {
 	implicit class SeqImplicit[A](xs: Seq[A]) {
 		def andNega(negaList: Seq[A]): (Int => A) = {

@@ -1,9 +1,9 @@
 package striking.learning.math
 
 import striking.learning.Implicits
+import striking.learning.Implicits._
 
 import scala.collection.LinearSeq
-import Implicits._
 
 case class Fib(n: BigInt, m: BigInt, __newFibs: (Fib, Int) => BigInt = null) extends Cloneable {
 	private val FibHelper = {

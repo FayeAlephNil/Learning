@@ -1,6 +1,6 @@
 package striking.learning
 
-import Implicits._
+import striking.learning.Implicits._
 
 object Learning extends App {
 	println(10.minDigitSum)
