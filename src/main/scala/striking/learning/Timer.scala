@@ -26,8 +26,9 @@ object Timers {
 	}).start()
 }
 
-class Timer(callback: Timer => Unit, _time: Int) {
-	Timers.addTimer(this)
+class Timer(callback: Timer => Unit, _time: Int, add: Boolean = true) {
+	if (add) Timers.addTimer(this)
+
 
 	private var _started = false
 	def started = _started
