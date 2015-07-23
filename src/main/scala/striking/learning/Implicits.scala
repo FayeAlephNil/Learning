@@ -29,5 +29,17 @@ object Implicits {
 				f(xs.head, ys.head) :: xs.tail.zipWith(f, ys.tail)
 			}
 		}
+
+		def groupsOf(n: Int): List[Seq[A]] = {
+			if (xs.isEmpty) {
+				List[Seq[A]]()
+			} else {
+				xs.take(n) :: xs.drop(n).groupsOf(n)
+			}
+		}
+
+		def split: List[Seq[A]] = {
+			xs.groupsOf(xs.length / 2)
+		}
 	}
 }
