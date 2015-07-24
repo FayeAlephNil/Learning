@@ -9,7 +9,7 @@ class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 	def get: (Int => BigInt) = list.andNega(negaList)
 
 	private def _list: LinearSeq[BigInt] = MathRef.numStreamBig(n, m, (x, y) => x + y)
-	private def _negaList: LinearSeq[BigInt] = MathRef.numStreamBig(n, m - n, (x, y) => x - y)
+	private def _negaList: LinearSeq[BigInt] = MathRef.numStreamBig(n, m - n, (x, y) => y - x)
 
 	val (list, negaList) = modifier(_list, _negaList)
 
