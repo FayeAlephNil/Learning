@@ -3,6 +3,7 @@ package striking.learning.math
 import striking.learning.Implicits._
 
 import scala.annotation.tailrec
+import scala.collection.LinearSeq
 
 object MathImps {
 	implicit class SeqInt(xs: Seq[Int]) {
@@ -131,6 +132,12 @@ object MathImps {
 
 				factorizations.head.sumSame(factorizations.last).toList
 			}
+		}
+	}
+
+	implicit class IntDivisibles(x: Int) {
+		def divisibles: Stream[Int] = {
+			MathRef.whole.map(_ * x)
 		}
 	}
 }
