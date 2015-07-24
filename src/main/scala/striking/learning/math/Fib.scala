@@ -1,7 +1,6 @@
 package striking.learning.math
 
 import striking.learning.Implicits._
-import striking.learning.math.MathImps._
 
 import scala.collection.LinearSeq
 
@@ -42,25 +41,6 @@ class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 			(theList.filter(f), theNegaList.filter(f))
 		}
 		new Fib(n, m, nextModifier)
-	}
-
-	def indexOf(elem: BigInt): Int = {
-		var result: Float = 1.1f
-
-		new Thread(new Runnable {
-			override def run(): Unit = {
-				result = list.indexOf(elem)
-			}
-		}).start()
-
-		new Thread(new Runnable {
-			override def run(): Unit = {
-				result = negaList.indexOf(elem)
-			}
-		}).start()
-
-		while (!result.isInt) {}
-		result.toInt
 	}
 
 	def pisano(y: Int): Fib = {
