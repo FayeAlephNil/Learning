@@ -15,7 +15,7 @@ class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 
 	def regenWithGen(regen: Fib => (BigInt, BigInt)): Fib = {
 		val (a, b) = regen(this)
-		new Fib(a, b)
+		new Fib(a, b, modifier)
 	}
 
 	def regenWithIndex(a: Int, b: Int, regen: (BigInt => BigInt)): Fib = {
