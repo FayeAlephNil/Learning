@@ -140,4 +140,8 @@ object MathImps {
 			MathRef.natural.map(_ * x)
 		}
 	}
+
+	implicit class FloatChecks(x: Float) {
+		def isInt: Boolean = x == x.toInt
+	}
 }
