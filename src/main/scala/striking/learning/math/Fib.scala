@@ -4,33 +4,14 @@ import striking.learning.Implicits._
 
 import scala.collection.LinearSeq
 
-case class Fib(n: BigInt, m: BigInt, __newFibs: (Fib, Int) => BigInt = null) extends Cloneable {
-	private val FibHelper = {
-		class FibHelper {
-			def newFibsDefault(fib: Fib, x: Int): BigInt = {
-				if (x == 0) {
-					fib.n
-				} else if (x == 1) {
-					fib.m
-				} else if (x < 0) {
-					fib.get(x + 2) - fib.get(x + 1)
-				} else {
-					fib.get(x - 1) + fib.get(x - 2)
-				}
-			}
-		}
 
-		new FibHelper()
-	}
-
-	val _newFibs = if (__newFibs == null) FibHelper.newFibsDefault _ else __newFibs
-
-	private val newFibs: Int => BigInt = _newFibs(this, _)
-
+class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 	def get: (Int => BigInt) = list.andNega(negaList)
 
-	def list: LinearSeq[BigInt] = MathRef.whole.map(newFibs)
-	def negaList: LinearSeq[BigInt] = MathRef.negative.map(newFibs)
+	private def _list: LinearSeq[BigInt] = MathRef.numStreamBig(n, m, (x, y) => x + y)
+	private def _negaList: LinearSeq[BigInt] = MathRef.numStreamBig(n, m - n, (x, y) => x - y)
+
+	val (list, negaList) = modifier(_list, _negaList)
 
 	def regenWithGen(regen: Fib => (BigInt, BigInt)): Fib = {
 		val (a, b) = regen(this)
@@ -46,10 +27,19 @@ case class Fib(n: BigInt, m: BigInt, __newFibs: (Fib, Int) => BigInt = null) ext
 	def regenWith: (BigInt => BigInt) => Fib = regenWithIndex(0, 1, _)
 
 	def map(f: BigInt => BigInt): Fib = {
-		def nextFibsFib(fib: Fib, x: Int): BigInt = {
-			f(_newFibs(fib, x))
+		def nextModifier: Fib.Modifier = { (aList, aNegaList) =>
+			val (theList, theNegaList) = modifier(aList, aNegaList)
+			(theList.map(f), theNegaList.map(f))
 		}
-		Fib(n, m, nextFibsFib)
+		new Fib(n, m, nextModifier)
+	}
+
+	def filter(f: BigInt => Boolean): Fib = {
+		def nextModifier: Fib.Modifier = { (aList, aNegaList) =>
+			val (theList, theNegaList) = modifier(aList, aNegaList)
+			(theList.filter(f), theNegaList.filter(f))
+		}
+		new Fib(n, m, nextModifier)
 	}
 
 	def pisano(y: Int): Fib = {
@@ -57,5 +47,13 @@ case class Fib(n: BigInt, m: BigInt, __newFibs: (Fib, Int) => BigInt = null) ext
 			x % y
 		}
 		map(modY)
+	}
+}
+
+object Fib {
+	type Modifier = (LinearSeq[BigInt], LinearSeq[BigInt]) => (LinearSeq[BigInt], LinearSeq[BigInt])
+
+	def defaultModifier: Modifier = { (list, negaList) =>
+		(list, negaList)
 	}
 }
