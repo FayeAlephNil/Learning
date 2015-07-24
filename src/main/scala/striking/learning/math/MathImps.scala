@@ -136,8 +136,8 @@ object MathImps {
 	}
 
 	implicit class IntDivisibles(x: Int) {
-		def divisibles: Stream[Int] = {
-			MathRef.whole.map(_ * x)
+		def divisibles: LinearSeq[Int] = {
+			MathRef.natural.map(_ * x)
 		}
 	}
 }

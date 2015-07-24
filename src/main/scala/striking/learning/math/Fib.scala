@@ -4,8 +4,9 @@ import striking.learning.Implicits._
 
 import scala.collection.LinearSeq
 
+class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) extends Seq[BigInt] {
+	private val self = this
 
-class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 	def get: (Int => BigInt) = list.andNega(negaList)
 
 	private def _list: LinearSeq[BigInt] = MathRef.numStreamBig(n, m, (x, y) => x + y)
@@ -34,7 +35,12 @@ class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 		new Fib(n, m, nextModifier)
 	}
 
-	def filter(f: BigInt => Boolean): Fib = {
+	def pisano(y: Int): Fib = {
+		def modY(x: BigInt): BigInt = x % y
+		map(modY _)
+	}
+
+	override def filter(f: BigInt => Boolean): Fib = {
 		def nextModifier: Fib.Modifier = { (aList, aNegaList) =>
 			val (theList, theNegaList) = modifier(aList, aNegaList)
 			(theList.filter(f), theNegaList.filter(f))
@@ -42,11 +48,20 @@ class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 		new Fib(n, m, nextModifier)
 	}
 
-	def pisano(y: Int): Fib = {
-		def modY(x: BigInt): BigInt = {
-			x % y
+	override def length: Int = Int.MaxValue
+
+	override def apply(idx: Int): BigInt = get(idx)
+
+	override def iterator: Iterator[BigInt] = new Iterator[BigInt] {
+		private var x = 0
+
+		override def hasNext: Boolean = true
+
+		override def next(): BigInt = {
+			val result = get(x)
+			x += 1
+			result
 		}
-		map(modY)
 	}
 }
 
