@@ -9,7 +9,5 @@ object Learning extends App {
 	val factor3Fibs: Fib = MathRef.FibNumbers.filter((x: BigInt) => 3 factorof x.intValue())
 	factor3Fibs.list.take(10).foreach(println)
 	println()
-	println(MathRef.FibNumbers.indexOf(1))
-	println()
 	2.divisibles.take(10).foreach(println)
 }
