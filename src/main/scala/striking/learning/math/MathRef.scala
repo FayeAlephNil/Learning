@@ -25,4 +25,6 @@ object MathRef {
 
 	def Lucas = new Fib[BigInt](2, 1)
 	def FibNumbers = new Fib[BigInt](0, 1)
+
+	def SternSeries = new Stern[Int]()
 }

@@ -5,58 +5,58 @@ import MathImps._
 import scala.annotation.tailrec
 import scala.collection.{GenTraversableOnce, LinearSeq}
 
-class Stern(_modifier: Stern.Modifier = Stern.defaultModifier) {
+class Stern[A](_modifier: Stern.Modifier[A] = Stern.defaultModifier) {
 	def modifier = _modifier
 
 	@tailrec
-	private def _stern(acc: Int, x: Int): Int = {
+	private def __stern(acc: Int, x: Int): Int = {
 		x match {
 			case 0 => acc
-			case 1 => _stern(acc + 1, 0)
+			case 1 => __stern(acc + 1, 0)
 			case _ =>
 				if (x.even) {
-					_stern(acc, x / 2)
+					__stern(acc, x / 2)
 				}
 				else {
 					val y = x - 1
-					val newAcc = acc + stern(y / 2 + 1)
-					_stern(newAcc, y / 2)
+					val newAcc = acc + _stern(y / 2 + 1)
+					__stern(newAcc, y / 2)
 				}
 		}
 	}
 
-	def stern(x: Int): Int = {
-		sterns.apply(x)
-	}
+	private def _stern: Int => Int = _sterns.apply
 
-	val _sterns: LinearSeq[Int] = MathRef.whole.map(_stern(0, _))
+	def stern: Int => A = sterns.apply
 
-	def sterns: LinearSeq[Int] = modifier(_sterns)
+	private val _sterns: LinearSeq[Int] = MathRef.whole.map(__stern(0, _))
 
-	def flatMap(f: Int => GenTraversableOnce[Int]): Stern = {
-		def nextModifier: Stern.Modifier = { (aList) =>
+	def sterns: LinearSeq[A] = modifier(_sterns)
+
+	def flatMap[B](f: A => GenTraversableOnce[B]): Stern[B] = {
+		def nextModifier: Stern.Modifier[B] = { (aList) =>
 			modifier(aList).flatMap(f)
 		}
-		new Stern(nextModifier)
+		new Stern[B](nextModifier)
 	}
 
-	def map(f: Int => Int): Stern = {
-		def nextModifier: Stern.Modifier = { (aList) =>
+	def map[B](f: A => B): Stern[B] = {
+		def nextModifier: Stern.Modifier[B] = { (aList) =>
 			modifier(aList).map(f)
 		}
-		new Stern(nextModifier)
+		new Stern[B](nextModifier)
 	}
 
-	def filter(f: Int => Boolean): Stern = {
-		def nextModifier: Stern.Modifier = { (aList) =>
+	def filter(f: A => Boolean): Stern[A] = {
+		def nextModifier: Stern.Modifier[A] = { (aList) =>
 			modifier(aList).filter(f)
 		}
-		new Stern(nextModifier)
+		new Stern[A](nextModifier)
 	}
 }
 
 object Stern {
-	type Modifier = LinearSeq[Int] => LinearSeq[Int]
+	type Modifier[A] = LinearSeq[Int] => LinearSeq[A]
 
-	val defaultModifier: Modifier = identity
+	val defaultModifier: Modifier[Int] = identity
 }
