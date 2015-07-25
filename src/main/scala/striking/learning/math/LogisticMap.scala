@@ -40,6 +40,10 @@ class LogisticMap[A](r: Double = 3.57, start: Double = 0.5, _modifier: LogisticM
 		}
 		new LogisticMap[A](r, start, nextModifier)
 	}
+
+	def cobweb: Cobweb[Double, Double] = {
+		new Cobweb[Double, Double](x => r * x * (1 - x), start)
+	}
 }
 
 object LogisticMap {
