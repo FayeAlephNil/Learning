@@ -18,9 +18,6 @@ class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobwe
 
 	private def valList = MathRef.whole.map(_getVal)
 
-	(start, f(start))
-	(f(start), f(start))
-	(f(start), f(f(start)))
 	private def _get(x: Int): (A, A) = {
 		val a = if (x != 0) _get(x - 1) else (start, start)
 		if (x.even) {
