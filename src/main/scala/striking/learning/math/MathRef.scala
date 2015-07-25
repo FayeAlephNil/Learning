@@ -27,4 +27,6 @@ object MathRef {
 	def FibNumbers = new Fib[BigInt](0, 1)
 
 	def SternSeries = new Stern[Int]()
+
+	def BasicLogistic = new LogisticMap[Double]()
 }
