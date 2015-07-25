@@ -122,7 +122,7 @@ object MathImps {
 		}
 
 		def factorization: List[(Int, Int)] = {
-			if (x.prime) {
+			if (x.prime || x == 0 || x == 1) {
 				(x, 1) :: List[(Int, Int)]()
 			} else {
 				val factorsX = x.factors

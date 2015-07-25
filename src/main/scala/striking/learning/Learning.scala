@@ -4,15 +4,6 @@ import striking.learning.math.MathRef
 import striking.learning.math.MathImps._
 
 object Learning extends App {
-	def testFunc(x: Int): List[Int] = {
-		if (x.even) {
-			x :: 1 :: Nil
-		} else {
-			List[Int]()
-		}
-	}
-
-	MathRef.SternSeries.map(testFunc).sterns.take(10).foreach(println)
-	println()
-	MathRef.SternSeries.flatMap(testFunc).sterns.take(8).foreach(println)
+	val factorizations = MathRef.SternSeries.map(_.factorization).sterns
+	MathRef.SternSeries.sterns.zip(factorizations).take(20).foreach(println)
 }
