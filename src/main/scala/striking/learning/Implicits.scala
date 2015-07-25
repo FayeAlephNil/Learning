@@ -42,4 +42,10 @@ object Implicits {
 			xs.groupsOf(xs.length / 2)
 		}
 	}
+
+	implicit class TupleImplicit[A](t: (A, A)) {
+		def map[B](f: A => B): (B, B) = {
+			(f(t._1), f(t._2))
+		}
+	}
 }

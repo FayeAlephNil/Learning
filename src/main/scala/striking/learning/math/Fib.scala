@@ -29,16 +29,14 @@ class Fib(n: BigInt, m: BigInt, modifier: Fib.Modifier = Fib.defaultModifier) {
 
 	def map(f: BigInt => BigInt): Fib = {
 		def nextModifier: Fib.Modifier = { (aList, aNegaList) =>
-			val (theList, theNegaList) = modifier(aList, aNegaList)
-			(theList.map(f), theNegaList.map(f))
+			modifier(aList, aNegaList).map(_.map(f))
 		}
 		new Fib(n, m, nextModifier)
 	}
 
 	def filter(f: BigInt => Boolean): Fib = {
 		def nextModifier: Fib.Modifier = { (aList, aNegaList) =>
-			val (theList, theNegaList) = modifier(aList, aNegaList)
-			(theList.filter(f), theNegaList.filter(f))
+			modifier(aList, aNegaList).map(_.filter(f))
 		}
 		new Fib(n, m, nextModifier)
 	}
