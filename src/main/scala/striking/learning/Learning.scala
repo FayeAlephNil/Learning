@@ -6,7 +6,7 @@ import striking.learning.math.MathImps._
 object Learning extends App {
 	MathRef.FibNumbers.flatMap { x =>
 		if (x.intValue().even) {
-			x.toString() :: "1" :: Nil
+			x :: 1 :: Nil
 		} else {
 			Nil
 		}
