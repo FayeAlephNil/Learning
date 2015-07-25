@@ -2,7 +2,7 @@ package striking.learning.math
 
 import striking.learning.Implicits._
 
-import scala.collection.LinearSeq
+import scala.collection.{GenTraversableOnce, LinearSeq}
 
 class Fib[A](n: BigInt, m: BigInt, _modifier: Fib.Modifier[A] = Fib.defaultModifier) {
 	def get: (Int => A) = list.andNega(negaList)
@@ -13,6 +13,13 @@ class Fib[A](n: BigInt, m: BigInt, _modifier: Fib.Modifier[A] = Fib.defaultModif
 	private val _negaList: LinearSeq[BigInt] = MathRef.numStreamBig(n, m - n, (x, y) => y - x)
 
 	val (list, negaList) = modifier(_list, _negaList)
+
+	def flatMap[B](f: A => GenTraversableOnce[B]): Fib[B] = {
+		def nextModifier: Fib.Modifier[B] = { (aList, aNegaList) =>
+			modifier(aList, aNegaList).map(_.flatMap(f))
+		}
+		new Fib(n, m, nextModifier)
+	}
 
 	def map[B](f: A => B): Fib[B] = {
 		def nextModifier: Fib.Modifier[B] = { (aList, aNegaList) =>
