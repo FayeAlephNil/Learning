@@ -23,6 +23,6 @@ object MathRef {
 
 	def negative: Stream[Int] = numStream(0, -1, (x: Int, y: Int) => x - 1)
 
-	def Lucas = new Fib(2, 1)
-	def FibNumbers = new Fib(0, 1)
+	def Lucas = new Fib[BigInt](2, 1)
+	def FibNumbers = new Fib[BigInt](0, 1)
 }

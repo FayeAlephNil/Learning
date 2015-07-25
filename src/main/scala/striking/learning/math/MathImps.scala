@@ -144,4 +144,24 @@ object MathImps {
 	implicit class FloatChecks(x: Float) {
 		def isInt: Boolean = x == x.toInt
 	}
+
+	implicit class BigFibImplicit(fib: Fib[BigInt]) {
+		def pisano(y: Int): Fib[BigInt] = {
+			def modY(x: BigInt): BigInt = x % y
+			fib.map[BigInt](modY)
+		}
+
+		def regenWithGen(regen: Fib[BigInt] => (BigInt, BigInt)): Fib[BigInt] = {
+			val (a, b) = regen(fib)
+			new Fib[BigInt](a, b, fib.modifier)
+		}
+
+		def regenWithIndex(a: Int, b: Int, regen: (BigInt => BigInt)): Fib[BigInt] = {
+			regenWithGen { gen =>
+				(regen(gen.get(a)), regen(gen.get(b)))
+			}
+		}
+
+		def regenWith: (BigInt => BigInt) => Fib[BigInt] = regenWithIndex(0, 1, _)
+	}
 }
