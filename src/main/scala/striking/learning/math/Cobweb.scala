@@ -6,18 +6,6 @@ import MathImps._
 class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobweb.defaultModifier[A]) {
 	def modifier = _modifier
 
-	private def _getVal(x: Int): A = {
-		x match {
-			case 0 => start
-			case 1 => f(start)
-			case _ => f(getVal(x - 1))
-		}
-	}
-
-	private def getVal: Int => A = valList.apply
-
-	private def valList = MathRef.whole.map(_getVal)
-
 	private def _get(x: Int): (A, A) = {
 		val a = if (x != 0) _get(x - 1) else (start, start)
 		if (x.even) {
