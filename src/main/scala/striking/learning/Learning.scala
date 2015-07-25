@@ -5,7 +5,7 @@ import striking.learning.math.MathImps._
 
 object Learning extends App {
 	def testFunc(x: Int): List[Int] = {
-		if (x.intValue().even) {
+		if (x.even) {
 			x :: 1 :: Nil
 		} else {
 			List[Int]()
