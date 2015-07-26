@@ -21,11 +21,15 @@ class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobwe
 
 	def list = modifier(_list)
 
-	def map[C](g: ((B, B)) => (C, C)): Cobweb[A, C] = {
+	def mapTuple[C](g: ((B, B)) => (C, C)): Cobweb[A, C] = {
 		def nextModifier: Cobweb.Modifier[A, C] = { (aList) =>
 			modifier(aList).map[(C, C), LinearSeq[(C, C)]](g)
 		}
 		new Cobweb[A, C](f, start, nextModifier)
+	}
+
+	def map[C](g: B => C): Cobweb[A, C] = {
+		mapTuple(t => (g(t._1), g(t._2)))
 	}
 
 	def filter(g: ((B, B)) => Boolean): Cobweb[A, B] = {
