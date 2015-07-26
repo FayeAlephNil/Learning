@@ -1,7 +1,8 @@
 package striking.learning.math
 
-import scala.collection.{GenTraversableOnce, LinearSeq}
-import MathImps._
+import striking.learning.math.MathImps._
+
+import scala.collection.LinearSeq
 
 class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobweb.defaultModifier[A]) {
 	def modifier = _modifier
@@ -32,13 +33,16 @@ class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobwe
 		mapTuple(t => (g(t._1), g(t._2)))
 	}
 
-	def filter(g: ((B, B)) => Boolean): Cobweb[A, B] = {
+	def filterTuple(g: ((B, B)) => Boolean): Cobweb[A, B] = {
 		def nextModifier: Cobweb.Modifier[A, B] = { (aList) =>
 			modifier(aList).filter(g)
 		}
 		new Cobweb[A, B](f, start, nextModifier)
 	}
 
+	def filter(g: B => Boolean): Cobweb[A, B] = {
+		filterTuple(t => g(t._1) && g(t._2))
+	}
 }
 
 object Cobweb {

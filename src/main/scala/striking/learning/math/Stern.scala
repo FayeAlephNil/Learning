@@ -1,6 +1,6 @@
 package striking.learning.math
 
-import MathImps._
+import striking.learning.math.MathImps._
 
 import scala.annotation.tailrec
 import scala.collection.{GenTraversableOnce, LinearSeq}
