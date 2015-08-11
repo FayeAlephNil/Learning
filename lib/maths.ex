@@ -1,4 +1,4 @@
-defmodule LearningElixir do
+defmodule Maths do
   def factorial(0) do
     1
   end
