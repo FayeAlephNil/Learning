@@ -1,5 +1,5 @@
 defmodule MathsTest do
-  use ExUnit.case
+  use ExUnit.Case
 
   test "factorial" do
     assert Maths.factorial(0) == 1
