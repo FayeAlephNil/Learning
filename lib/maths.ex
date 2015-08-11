@@ -1,9 +1,5 @@
 defmodule Maths do
-  def factorial(0) do
-    1
-  end
+  def fac(0), do: 1
 
-  def factorial(x) when is_number(x) and x > 0 do
-    x * factorial(x-1)
-  end
+  def fac(n) when n > 0, do: Enum.reduce(1..n, 1, &*/2) 
 end
