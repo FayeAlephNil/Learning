@@ -30,7 +30,7 @@ class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobwe
 	}
 
 	def map[C](g: B => C): Cobweb[A, C] = {
-		mapTuple(t => (g(t._1), g(t._2)))
+		mapTuple(Cobweb.tupleFunc(g))
 	}
 
 	def filterTuple(g: ((B, B)) => Boolean): Cobweb[A, B] = {
@@ -41,7 +41,10 @@ class Cobweb[A, B](f: A => A, start: A, _modifier: Cobweb.Modifier[A, B] = Cobwe
 	}
 
 	def filter(g: B => Boolean): Cobweb[A, B] = {
-		filterTuple(t => g(t._1) && g(t._2))
+		val and: ((Boolean, Boolean)) => Boolean = { (t: (Boolean, Boolean)) =>
+			t._1 && t._2
+		}
+		filterTuple(Cobweb.tupleFuncMod(g, and))
 	}
 }
 
@@ -49,4 +52,13 @@ object Cobweb {
 	type Modifier[A, B] = LinearSeq[(A, A)] => LinearSeq[(B, B)]
 
 	def defaultModifier[A]: Modifier[A, A] = identity
+
+	protected def tupleFuncMod[A, B, C](f: A => B, g: ((B, B)) => C): ((A, A)) => C = {
+		t: (A, A) => g(f(t._1), f(t._2))
+	}
+
+	protected def tupleFunc[A, B](f: A => B): ((A, A)) => (B, B) = {
+		val func: ((B, B)) => (B, B) = (t: (B, B)) => t
+		tupleFuncMod(f, func)
+	}
 }
