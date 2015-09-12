@@ -1,5 +1,24 @@
 (ns general-clojure.util)
 
+(defn get-rec
+  [lst1 x]
+  "Gets the item in index x recursively"
+  (if (< x 0)
+    (throw (new IndexOutOfBoundsException))
+    (loop [lst lst1
+      y x]
+      (if (= y 0)
+        (first lst)
+        (recur (rest lst) (- y 1))))))
+
+(defn list-and-nega
+  [lst neg-lst]
+  "Returns a function that gets from the first list for positive indices and the second for negative indices"
+  (memoize (fn [x]
+    (if (< x 0)
+      (get-rec neg-lst (* x -1))
+      (get-rec lst x)))))
+
 (defn in?
   "true if seq contains elm"
   [lst elm]

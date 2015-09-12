@@ -137,19 +137,7 @@
       acc
       (recur (dec cnt) (* acc cnt)))))
 
-(defn fib
-  "Finds the fibonacci of a number"
-  [n]
-  (loop [total 0
-         last 1
-         count 0]
-    (if (< count n)
-      (recur (+ last total) total (+ count 1))
-      total)))
-
-(def fib
-  "Finds the fibonacci of a number"
-  (memoize fib))
+;; General defs
 
 (def negatives
   "All the negative numbers"
@@ -163,3 +151,26 @@
 (def perfects
   "All the perfect numbers"
   (filter perfect? natural))
+
+;; Fibonacci
+
+(defn fib-seq
+  "Creates a fibonacci sequence with starting values"
+  [x y]
+  (let [lst (map first (iterate (fn [[a b]] [b (+' a b)]) [x y]))
+        neg-lst (map first (iterate (fn [[a b]] [b (-' a b)]) [x (- y x)]))]
+        (u/list-and-nega lst neg-lst)))
+
+(def fib
+  "Finds the fibonacci number in the index"
+  (fib-seq 0 1))
+
+(def fibs (map fib whole))
+(def nega-fibs (map fib (cons 0 negatives)))
+
+(def lucas
+  "Finds the lucas number in the index"
+  (fib-seq 2 1))
+
+(def lucases (map lucas whole))
+(def nega-lucases (map lucas (cons 0 negatives)))
