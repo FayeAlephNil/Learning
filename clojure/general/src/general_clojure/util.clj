@@ -22,6 +22,11 @@
 (defn in?
   "true if seq contains elm"
   [lst elm]
+  (some #(== elm %) lst))
+
+(defn strict-in?
+  "Like in?, but uses = instead of =="
+  [lst elm]
   (some #(= elm %) lst))
 
 (defn common
