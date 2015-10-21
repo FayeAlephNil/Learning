@@ -5,6 +5,7 @@ import Trees.Tree
 
 -- Haskell Imports
 import Control.Applicative
+import Control.Monad
 
 data LinkedList a = EmptyTree | Node a (LinkedList a) deriving (Show, Read, Eq)
 
@@ -25,17 +26,14 @@ instance Functor LinkedList where
 
 instance Applicative LinkedList where
   pure = singleton
-  funcTree <*> EmptyTree = EmptyTree
-  EmptyTree <*> valueTree = EmptyTree
-  (Node g restg) <*> (Node a resta) = Node b restb
-    where
-      b = g a
-      restb = restg <*> resta
+  (<*>) = ap
 
 instance Monad LinkedList where
   EmptyTree >>= g = EmptyTree
-  (Node a rest) >>= g = Node b restb
+  (Node a rest) >>= g = insertAll treeb restTransform
     where
-      (Node b _rest) = g a
-      restb = rest >>= g
+      insertAll EmptyTree base = base
+      insertAll (Node x restx) base = treeInsert x (insertAll restx base)
+      treeb = g a
+      restTransform = rest >>= g
   return = singleton
