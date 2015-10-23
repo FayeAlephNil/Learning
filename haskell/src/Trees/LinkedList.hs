@@ -16,9 +16,12 @@ instance Tree LinkedList a where
   treeInsert x rest = Node x rest
   treeToList EmptyTree = []
   treeToList (Node first rest) = first:(treeToList rest)
-  treeElem _ _ = False -- Need to move all this stuff around to make Tree more general
   mirror EmptyTree = EmptyTree
   mirror (Node first rest) = treeInsert first (mirror rest)
+
+instance (Eq a) => EqTree LinkedList a where
+  treeElem _ EmptyTree = False
+  treeElem a (Node x rest) = a == x || treeElem a rest
 
 instance Functor LinkedList where
   fmap f EmptyTree = EmptyTree

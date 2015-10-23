@@ -9,5 +9,7 @@ class (Functor tree) => Tree tree a where
   treeFromList :: [a] -> tree a
   treeFromList = fromListRooted empty
   treeToList :: tree a -> [a]
-  treeElem :: a -> tree a -> Bool
   mirror :: tree a -> tree a
+
+class (Eq a, Tree tree a) => EqTree tree a where
+  treeElem :: a -> tree a -> Bool

@@ -24,13 +24,15 @@ instance (Ord a) => Tree BinaryTree a where
   -- Is not the inverse of treeFromList as the ordering in the List was lost
   treeToList EmptyTree = []
   treeToList (Node x left right) = (treeToList left) ++ (treeToList right) ++ [x]
+  mirror EmptyTree = EmptyTree
+  mirror (Node x left right) = Node x right left
+
+instance (Ord a) => EqTree BinaryTree a where
   treeElem _ EmptyTree = False
   treeElem x (Node a left right)
     | x == a = True
     | x < a = treeElem x left
     | x > a = treeElem x right
-  mirror EmptyTree = EmptyTree
-  mirror (Node x left right) = Node x right left
 
 instance Applicative BinaryTree where
   pure x = Node x EmptyTree EmptyTree
