@@ -14,33 +14,33 @@ class StringKoans extends Koans {
 	
 	
 	void testDoubleQuoteStringType() {
-		assertEquals __, "Any ole String".class.name
+		assertEquals "java.lang.String", "Any ole String".class.name
 	}
 	
 	void testSingleQuoteStringType() {
-		assertEquals __, 'A Single Quote String'.class.name
+		assertEquals "java.lang.String", 'A Single Quote String'.class.name
 	}
 	
 	void testSlashyQuoteStringType() {
-		assertEquals __, /A Slashy String/.class.name
+		assertEquals "java.lang.String", /A Slashy String/.class.name
 	}
 
 	void testMultiLineStringType() {
-		assertEquals __, """A Triple Quote String""".class.name
+		assertEquals "java.lang.String", """A Triple Quote String""".class.name
 	}
 
 	void testStringInterpolation() {
 		def answer = "c"
-		assertEquals __, "ab${answer}"
-		assertEquals __, 'ab${answer}'
-		assertEquals __, /ab${answer}/
+		assertEquals 'abc', "ab${answer}"
+		assertEquals 'ab${answer}', 'ab${answer}'
+		assertEquals 'abc', /ab${answer}/
 	}
 	
 	void testInterpolatedStringType() {
 		def answer = "c"
-		assertEquals __, "ab${answer}".class.name
-		assertEquals __, 'ab${answer}'.class.name
-		assertEquals __, /ab${answer}/.class.name
+		assertEquals "org.codehaus.groovy.runtime.GStringImpl", "ab${answer}".class.name
+		assertEquals "java.lang.String", 'ab${answer}'.class.name
+		assertEquals "org.codehaus.groovy.runtime.GStringImpl", /ab${answer}/.class.name
 	}
 	
 	void testMultiLineString() {
@@ -48,60 +48,60 @@ class StringKoans extends Koans {
 		def myStr2 = "More Stuff"
 		def name = """${myStr1}
 ${myStr2}"""
-		assertEquals __, name
+		assertEquals "Stuff\nMore Stuff", name
 		
 		name = """${myStr1} \
 ${myStr2}"""
-		assertEquals __, name
+		assertEquals "Stuff More Stuff", name
 	}
 	
 	void testStringConcatenation() {
 		def myStr1 = "ab"
 		def myStr2 = "cd"
-		assertEquals __, myStr1 + " " + myStr2
-		assertEquals __, (myStr1 << " " << myStr2).toString() // leftShift returns a StringBuffer
-		assertEquals __, myStr1.plus(" ").plus(myStr2)
+		assertEquals "ab cd", myStr1 + " " + myStr2
+		assertEquals "ab cd", (myStr1 << " " << myStr2).toString() // leftShift returns a StringBuffer
+		assertEquals "ab cd", myStr1.plus(" ").plus(myStr2)
 	}
 	
 	void testStringMutable() {
 		def myString = "abc"
-		assertEquals __, myString
-		assertEquals __, myString.reverse()
-		assertEquals __, myString
+		assertEquals "abc", myString
+		assertEquals "cba", myString.reverse()
+		assertEquals "abc", myString
 	}
 	
 	void testStringBuilderMutable(){
 		def myStrBldr = new StringBuilder("abc")
-		assertEquals __, myStrBldr.toString()
-		assertEquals __, myStrBldr.reverse().toString()
-		assertEquals __, myStrBldr.toString()
+		assertEquals "abc", myStrBldr.toString()
+		assertEquals "cba", myStrBldr.reverse().toString()
+		assertEquals "cba", myStrBldr.toString()
 	}
 	
 	
 	void testSubScriptingStrings() {
-		assert 'abcdefg'[ 3 ] == __
-		assert 'abcdefg'.getAt( 3 ) == __ //equivalent method name
-		assert 'abcdefg'.charAt( 3 ) == __ //alternative method name
-		assert 'abcdefg'[ 3..5 ] == __
-		assert 'abcdefg'.getAt( 3..5 ) == __
-		assert 'abcdefg'[ 1, 3, 5, 6 ] == __
-		assert 'abcdefg'[ 1, 3..5 ] == __
-		assert 'abcdefg'[-5..-2] == __
-		assert 'abcdefg'.getAt( [ 1, 3..5 ] ) == __
+		assert 'abcdefg'[ 3 ] == "d"
+		assert 'abcdefg'.getAt( 3 ) == "d" //equivalent method name
+		assert 'abcdefg'.charAt( 3 ) == "d" //alternative method name
+		assert 'abcdefg'[ 3..5 ] == "def"
+		assert 'abcdefg'.getAt( 3..5 ) == "def"
+		assert 'abcdefg'[ 1, 3, 5, 6 ] == "bdfg"
+		assert 'abcdefg'[ 1, 3..5 ] == "bdef"
+		assert 'abcdefg'[-5..-2] == "cdef"
+		assert 'abcdefg'.getAt( [ 1, 3..5 ] ) == "bdef"
 	}
 	
 	
 	void testSubScriptingStringBuilder() {
 		def myStrBldr = new StringBuilder("abcd")
-		assert __ == myStrBldr[1..3]
-		assert __ == myStrBldr.toString()
+		assert "bcd" == myStrBldr[1..3]
+		assert "abcd" == myStrBldr.toString()
 	}
 	
 	void testAppendingStringBuilder() {
 		def myStrBldr = new StringBuilder("ab")
 		myStrBldr.append "cd"
-		assert __ == myStrBldr.toString()
+		assert "abcd" == myStrBldr.toString()
 		myStrBldr << "ef"
-		assert __ == myStrBldr.toString()
+		assert "abcdef" == myStrBldr.toString()
 	}
 }
