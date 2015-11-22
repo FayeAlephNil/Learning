@@ -9,27 +9,12 @@ class Fib {
 	private final def Number first
 	private final def Number second
 
-	public def list = LazyList.sequence { LazyList<Number> before ->
-		def tail = before.tail()
-		if (before.empty) {
-			first
-		} else if (tail.empty) {
-			second
-		} else {
-			before.first() + before.get(1)
-		}
+	private def LazyList makeSeq(Number a, Number b, Closure<Number> closure) {
+		new LazyList( {-> new Tuple2(a, makeSeq(b, closure.call(a, b), closure).closure)} )
 	}
 
-	public def negaList = LazyList.sequence { LazyList<Number> before ->
-		def tail = before.tail()
-		if (before.empty) {
-			first
-		} else if (tail.empty) {
-			second - first
-		} else {
-			before.get(1) - before.first()
-		}
-	}
+	public def list = makeSeq(first, second) { a, b -> a + b }
+	public def negaList = makeSeq(first, second - first) { a, b -> a - b }
 
 	def Fib(Number first, Number second) {
 		this.first = first
