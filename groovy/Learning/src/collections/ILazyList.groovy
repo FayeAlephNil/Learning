@@ -1,32 +1,51 @@
 package collections
 
-import collections.ILazyList.AnIterator
-import groovy.transform.TailRecursive
-
-trait ILazyList<E, T extends ILazyList<E, T>> {
+trait ILazyList<E, T extends ILazyList> {
 	abstract static def T nil()
 
-	abstract def E head()
+	abstract def E first()
+
+	abstract def T head()
 
 	abstract def T tail()
 
 	abstract def T cons(E newHead)
 
+	abstract def boolean isEmpty()
+
+	abstract def fold(n, acc, f)
+
+	abstract def foldAll(acc, f)
+
+	abstract def <T2> T map(Closure<T2> f)
+
+	abstract def T filter(Closure<Boolean> p)
+
+	abstract def <T2> T zipWith(ILazyList list, Closure<T2> f)
+
     static def Iterator<E> iterator(ILazyList<E, ILazyList> list) {
 		new AnIterator<E>(list)
+	}
+
+	static def E lastRec(ILazyList<E, ? extends ILazyList> list) {
+		def tail = list.tail()
+		tail.isEmpty() ? list.first() : lastRec(tail)
+	}
+
+	def last() {
+		lastRec(this)
+	}
+
+	def empty() {
+		isEmpty()
 	}
 
 	def iterator() {
 		iterator(this)
 	}
 
-	@TailRecursive
-	def List<E> recForce(ArrayList<E> acc) {
-		if (empty) acc else recForce(acc.add(0, head()))
-	}
-
-	def List<E> force() {
-		recForce(new ArrayList<E>())
+	def List<E> toList() {
+		takeAll()
 	}
 
 	def int size() {
@@ -36,19 +55,15 @@ trait ILazyList<E, T extends ILazyList<E, T>> {
 	}
 
 	def E get(int idx) {
-		if (idx == 0) head() else tail().get(idx - 1)
+		if (idx == 0) first() else tail().get(idx - 1)
 	}
 
-	def T take(int amount) {
-		def count = amount
-		def list = nil()
-		this.each {
-			if (count != 0) {
-				list = list.add(it)
-			}
-			count--
-		}
-		list
+	def List<E> take(int amount) {
+		fold(n, []) { acc, item -> acc << item} as List<E>
+	}
+
+	def List<E> takeAll() {
+		foldAll([]) { acc, item -> acc << item } as List<E>
 	}
 
 	def boolean equals(Object o) {
@@ -56,7 +71,7 @@ trait ILazyList<E, T extends ILazyList<E, T>> {
 		def isList = o instanceof ILazyList<E, ? extends ILazyList>
 		if (isList) {
 			def list = o as ILazyList<E, ? extends ILazyList>
-			def headsEqual = list.head().equals(this.head())
+			def headsEqual = list.first().equals(this.first())
 			headsEqual && ((list.tail() == list.nil() && this.tail() == nil()) || list.tail().equals(this.tail()))
 		} else {
 			false
@@ -64,7 +79,7 @@ trait ILazyList<E, T extends ILazyList<E, T>> {
 	}
 
 	private static class AnIterator<E> implements Iterator<E> {
-		def list
+		def ILazyList<E, ILazyList> list
 
 		def AnIterator(ILazyList<E, ILazyList> list) {
 			this.list = list
@@ -72,12 +87,12 @@ trait ILazyList<E, T extends ILazyList<E, T>> {
 
 		@Override
 		boolean hasNext() {
-			!list.head().equals(null) || !list.tail().equals(nil())
+			!list.isEmpty()
 		}
 
 		@Override
 		E next() {
-			def result = list.head()
+			def result = list.first()
 			list = list.tail()
 			result
 		}

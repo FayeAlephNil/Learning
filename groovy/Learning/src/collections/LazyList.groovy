@@ -1,86 +1,85 @@
 package collections
 
-class LazyList<E> implements ILazyList<E, LazyList<E>> {
-	private def head = null
-	private def tail
-
-	static def LazyList<E> nil() {
-		new LazyList<E>(null, null as LazyList<E>)
+class LazyList<E> implements ILazyList<E, LazyList> {
+	static def <E> LazyList<E> sequence(Closure<E> closure, LazyList<E> acc = nil()) {
+		new LazyList<E>({->
+			def head = closure.call(acc)
+			new Tuple2(head, sequence(closure, acc.cons(head)).closure)
+		})
 	}
 
-	static def LazyList<E> fromIter(Iterator<E> iter) {
-		if (iter.hasNext()) {
-			new LazyList<E>(iter.next(), iter)
-		} else {
-			nil()
-		}
-	}
-
-	static def <S> LazyList<E> fromGen(Closure<Tuple2<E, S>> closure, S beginState) {
-		fromIter(new StateIterator(closure, beginState))
-	}
-
-	private def LazyList(List<E> elems) {
+	static def fromStrict(List<E> strict) {
 		def list = nil()
-
-		elems.each {
+		strict.reverseEach {
 			list = list.cons(it)
-		}
-		list.reverse()
-	}
-
-	private def LazyList(E head, LazyList<E> tail) {
-		this.head = head
-		if (tail == null) this.tail = nil() else this.tail = tail
-	}
-
-	private def LazyList(E head, Iterator<E> tail) {
-		this.head = head
-		this.tail = tail
-	}
-
-	LazyList<E> reverse() {
-		def list = nil()
-		this.each {
-			list = list.cons(it as E)
 		}
 		list
 	}
 
+	static def <E> LazyList<E> nil() {
+		new LazyList( {-> null} )
+	}
+
+	def Closure<Tuple2<E, Closure>> closure
+
+	def LazyList(Closure closure) {
+		this.closure = closure
+	}
+
 	@Override
-	E head() {
-		head
+	E first() {
+		def tuple = closure.call()
+		tuple ? tuple.first : null
+	}
+
+	@Override
+	LazyList<E> head() {
+		def tail = tail()
+		tail.tail() == nil() ? this : tail.head().cons(first())
 	}
 
 	@Override
 	LazyList<E> tail() {
-		if (tail instanceof Iterator<E>) fromIter(tail) else tail
+		def tuple = closure.call()
+		tuple ? new LazyList<E>(tuple.second) : nil()
 	}
 
 	@Override
-	LazyList<E> cons(E head) {
-		new LazyList<E>(head, this)
+	LazyList<E> cons(E newHead) {
+		new LazyList<E>( {-> new Tuple2(newHead, closure)} )
 	}
 
-	private static class StateIterator<E, S> implements Iterator<E> {
-		def S state
-		def closure
+	@Override
+	boolean isEmpty() {
+		closure.call() == null
+	}
 
-		def StateIterator(Closure<Tuple2<E, S>> closure, S beginState) {
-			state = beginState
-			this.closure = closure
-		}
+	def fold(n, acc, f) {
+		n == 0 || isEmpty() ? acc : tail().fold(n-1, f.call(acc, first()), f)
+	}
 
-		@Override
-		boolean hasNext() {
-			return true
-		}
+	def foldAll(acc, f) {
+		isEmpty() ? acc : tail().foldAll(f.call(acc, first()), f)
+	}
 
-		@Override
-		E next() {
-			Tuple2<E, S> tuple = closure.call(state)
-			state = tuple.second
-			tuple.first
+	@Override
+	<T2> LazyList<T2> map(Closure<T2> f) {
+		isEmpty() ? nil() : new LazyList({ -> new Tuple2(f.call(first()), tail().map(f).closure) })
+	}
+
+	@Override
+	LazyList<E> filter(Closure<Boolean> p) {
+		def head = first()
+		if (isEmpty()) nil() else {
+			(p.call(head)) ? new LazyList({ -> new Tuple2(head, tail().filter(p).closure) }) : tail().filter(p)
 		}
+	}
+
+	@Override
+	def <T2> LazyList<T2> zipWith(ILazyList list, Closure<T2> f) {
+		this.isEmpty() ? nil() :
+			new LazyList({ ->
+				new Tuple2(f.call(first(), list.head()), tail().zipWith(list.tail(), f).closure)
+			})
 	}
 }
