@@ -6,18 +6,30 @@ import collections.LazyList
 class Fib {
 	public static final fibNums = new Fib(0, 1)
 
-	private final def Integer first
-	private final def Integer second
+	private final def Number first
+	private final def Number second
 
-	public def list = LazyList.fromGen({ def state ->
-		def result = state.first + state.second
-		new Tuple2<>(result, new Tuple2(state.second, result))
-	}, new Tuple2<>(first, second))
+	public def list = LazyList.sequence { LazyList<Number> before ->
+		def tail = before.tail()
+		if (before.empty) {
+			first
+		} else if (tail.empty) {
+			second
+		} else {
+			before.first() + before.get(1)
+		}
+	}
 
-	public def negaList = LazyList.fromGen({ def state ->
-		def result = state.second - state.first
-		new Tuple2<>(result, new Tuple2(state.second, result))
-	}, new Tuple2<>(first, second - first))
+	public def negaList = LazyList.sequence { LazyList<Number> before ->
+		def tail = before.tail()
+		if (before.empty) {
+			first
+		} else if (tail.empty) {
+			second - first
+		} else {
+			before.get(1) - before.first()
+		}
+	}
 
 	def Fib(Number first, Number second) {
 		this.first = first
