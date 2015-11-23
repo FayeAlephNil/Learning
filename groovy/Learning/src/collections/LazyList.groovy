@@ -1,10 +1,11 @@
 package collections
 
-class LazyList<E> implements ILazyList<E, LazyList> {
+class LazyList<E> {
 	static def <E> LazyList<E> sequence(Closure<E> closure, LazyList<E> acc = nil()) {
-		new LazyList<E>({->
-			def head = closure.call(acc)
-			new Tuple2(head, sequence(closure, acc.cons(head)).closure)
+		def E first = closure.call(acc)
+
+		new LazyList(first, {->
+			sequence(closure, acc.cons(first))
 		})
 	}
 
@@ -17,39 +18,56 @@ class LazyList<E> implements ILazyList<E, LazyList> {
 	}
 
 	static def <E> LazyList<E> nil() {
-		new LazyList( {-> null} )
+		new LazyList(0, {-> null})
 	}
 
-	def Closure<Tuple2<E, Closure>> closure
+	private def Closure<Tuple2<E, Closure>> closure
+	private def Closure<Integer> size
 
-	def LazyList(Closure closure) {
+	private def LazyList(Closure<Integer> size, Closure closure) {
 		this.closure = closure
+		this.size = size
 	}
 
-	@Override
+	private static def sizeOfClosure(Closure<Tuple2<E, Closure>> closure, int acc = 0) {
+		return {
+			def tuple = closure.call()
+			tuple == null ? acc : sizeOfClosure(tuple.second, acc + 1).call()
+		}
+	}
+
+	private static def lazyCons(E first, Closure<Tuple2<E, Closure>> closure) {
+		new LazyList({1 + sizeOfClosure(closure).call()}, { new Tuple2(first, closure) })
+	}
+
+	def LazyList(E first, Closure<LazyList<E>> closure) {
+		def list = lazyCons(first, {
+			def list = closure.call()
+			list == null ? null : new Tuple2(list.first(), list.tail().closure)
+		})
+		this.size = list.size
+		this.closure = list.closure
+	}
+
 	E first() {
 		def tuple = closure.call()
 		tuple ? tuple.first : null
 	}
 
-	@Override
 	LazyList<E> head() {
 		def tail = tail()
 		tail.tail() == nil() ? this : tail.head().cons(first())
 	}
 
-	@Override
 	LazyList<E> tail() {
 		def tuple = closure.call()
-		tuple ? new LazyList<E>(tuple.second) : nil()
+		tuple ? new LazyList<E>({ size() - 1}, tuple.second) : nil()
 	}
 
-	@Override
 	LazyList<E> cons(E newHead) {
-		new LazyList<E>( {-> new Tuple2(newHead, closure)} )
+		new LazyList<E>({1 + size.call()}, {-> new Tuple2(newHead, closure)} )
 	}
 
-	@Override
 	boolean isEmpty() {
 		closure.call() == null
 	}
@@ -62,24 +80,91 @@ class LazyList<E> implements ILazyList<E, LazyList> {
 		isEmpty() ? acc : tail().foldAll(f.call(acc, first()), f)
 	}
 
-	@Override
-	<T2> LazyList<T2> map(Closure<T2> f) {
-		isEmpty() ? nil() : new LazyList({ -> new Tuple2(f.call(first()), tail().map(f).closure) })
+	def <T2> LazyList<T2> map(Closure<T2> f) {
+		isEmpty() ? nil() : new LazyList(size, { -> new Tuple2(f.call(first()), tail().map(f).closure) })
 	}
 
-	@Override
 	LazyList<E> filter(Closure<Boolean> p) {
-		def head = first()
+		def first = first()
 		if (isEmpty()) nil() else {
-			(p.call(head)) ? new LazyList({ -> new Tuple2(head, tail().filter(p).closure) }) : tail().filter(p)
+			def tail = tail().filter(p)
+			(p.call(first)) ? new LazyList({1 + tail.size() },  { -> new Tuple2(first, tail.closure) }) : tail
 		}
 	}
 
-	@Override
-	def <T2> LazyList<T2> zipWith(ILazyList list, Closure<T2> f) {
+	def <T2> LazyList<T2> zipWith(LazyList list, Closure<T2> f) {
 		this.isEmpty() ? nil() :
-			new LazyList({ ->
-				new Tuple2(f.call(first(), list.head()), tail().zipWith(list.tail(), f).closure)
+			new LazyList(this.size, { ->
+				new Tuple2(f.call(first(), list.first()), tail().zipWith(list.tail(), f).closure)
 			})
+	}
+
+	static def Iterator<E> iterator(LazyList<E> list) {
+		new AnIterator<E>(list)
+	}
+
+	def last(LazyList<E> list = this) {
+		def tail = list.tail()
+		tail.isEmpty() ? list.first() : tail.last()
+	}
+
+	def empty() {
+		isEmpty()
+	}
+
+	def iterator() {
+		iterator(this)
+	}
+
+	def List<E> toList() {
+		takeAll()
+	}
+
+	def int size() {
+		size.call()
+	}
+
+	def E get(int idx) {
+		if (idx == 0) first() else tail().get(idx - 1)
+	}
+
+	def List<E> take(int amount) {
+		fold(n, []) { acc, item -> acc << item} as List<E>
+	}
+
+	def List<E> takeAll() {
+		foldAll([]) { acc, item -> acc << item } as List<E>
+	}
+
+	def boolean equals(Object o) {
+		if (this == null && o.equals(nil())) return true
+		def isList = o instanceof LazyList<E>
+		if (isList) {
+			def list = o as LazyList<E>
+			def firstsEqual = list.first().equals(this.first())
+			firstsEqual && ((list.tail().empty && this.tail().empty) || list.tail().equals(this.tail()))
+		} else {
+			false
+		}
+	}
+
+	private static class AnIterator<E> implements Iterator<E> {
+		def LazyList<E> list
+
+		def AnIterator(LazyList<E> list) {
+			this.list = list
+		}
+
+		@Override
+		boolean hasNext() {
+			!list.isEmpty()
+		}
+
+		@Override
+		E next() {
+			def result = list.first()
+			list = list.tail()
+			result
+		}
 	}
 }

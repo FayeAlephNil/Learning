@@ -10,7 +10,7 @@ class Fib {
 	private final def Number second
 
 	private def LazyList makeSeq(Number a, Number b, Closure<Number> closure) {
-		new LazyList( {-> new Tuple2(a, makeSeq(b, closure.call(a, b), closure).closure)} )
+		new LazyList(a, { makeSeq(b, closure.call(a, b), closure) } )
 	}
 
 	public def list = makeSeq(first, second) { a, b -> a + b }
