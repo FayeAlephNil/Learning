@@ -15,7 +15,7 @@ instance Tree LinkedList a where
   treeInsert x EmptyTree = singleton x
   treeInsert x rest = Node x rest
   treeToList EmptyTree = []
-  treeToList (Node first rest) = first:(treeToList rest)
+  treeToList (Node first rest) = first : treeToList rest
   mirror EmptyTree = EmptyTree
   mirror (Node first rest) = treeInsert first (mirror rest)
 

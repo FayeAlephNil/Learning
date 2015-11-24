@@ -23,7 +23,7 @@ instance (Ord a) => Tree BinaryTree a where
     | x > a = Node a left (treeInsert x right)
   -- Is not the inverse of treeFromList as the ordering in the List was lost
   treeToList EmptyTree = []
-  treeToList (Node x left right) = (treeToList left) ++ (treeToList right) ++ [x]
+  treeToList (Node x left right) = treeToList left ++ treeToList right ++ [x]
   mirror EmptyTree = EmptyTree
   mirror (Node x left right) = Node x right left
 

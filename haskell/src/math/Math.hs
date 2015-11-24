@@ -18,7 +18,7 @@ neg :: (Num a, Ord a)
  	=> a -- number to check
 	-> a -- +1 if positive -1 if negative
 neg n
-	| n < 0 = (-1)
+	| n < 0 = -1
 	| otherwise = 1
 
 -- Checks if a number is an integer
@@ -65,7 +65,7 @@ gcdAll (x:xs) = gcd x $ gcdAll xs
 simplifyAll ::
 	[Int] -- List to simplify based on gcd
 	-> [Int] -- List of simplified numbers
-simplifyAll xs = map (\x -> x `quot` (gcdAll xs)) xs
+simplifyAll xs = map (\x -> x `quot` gcdAll xs) xs
 
 --- Factorial
 
@@ -84,8 +84,7 @@ listAndNega ::
 	[a] -- List for positive indices
 	-> [a] -- List for negative indices
 	-> (Int -> a) -- Function from integer to element
-listAndNega list negaList = (\x -> if x < 0 then negaList !! (-x) else list !! x)
-
+listAndNega list negaList x = if x < 0 then negaList !! (-x) else list !! x
 -- Creates a fibonacci sequence with the starting numbers
 fibSeq :: (Num a) =>
 	a -- First number
@@ -93,8 +92,8 @@ fibSeq :: (Num a) =>
 	-> (Int -> a) -- Fibonacci function
 fibSeq n m = listAndNega list negaList
 	where
-		list = (n : m : zipWith (+) list (tail list))
-		negaList = (n : (m-n) : zipWith (-) negaList (tail negaList))
+		list = n : m : zipWith (+) list (tail list)
+		negaList = n : (m - n) : zipWith (-) negaList (tail negaList)
 
 -- Filters a fibonacci sequence
 filterFibSeq ::
@@ -112,7 +111,7 @@ regenWithGen :: (Num a) =>
 	(Int -> a) -- Fibonacci Passed in
 	-> ((Int -> a) -> (a, a)) -- Function that takes a fib and returns the starting values
 	-> (Int -> a) -- Resulting fib
-regenWithGen gen f = fibSeq (fst start) (snd start)
+regenWithGen gen f = uncurry fibSeq start
 	where start = f gen
 
 -- Regens given just two indices. Function only has to take nums and generate nums
@@ -122,7 +121,7 @@ regenWithIndex :: (Num a) =>
 	-> (Int -> a) -- fib to regen
 	-> (a -> a) -- Function to convert from result to new start
 	-> Int -> a -- Resulting fib
-regenWithIndex n m gen f = regenWithGen gen (\generator -> ((f $ generator n), (f $ generator m)))
+regenWithIndex n m gen f = regenWithGen gen (\generator -> (f $ generator n, f $ generator m))
 
 -- Regens the fib with indices 0 and 1
 regenWith :: (Num a) =>
@@ -135,7 +134,7 @@ regenWith = regenWithIndex 0 1
 fibDigitSummed :: (Integral a)
 	=> (Int -> a) -- Fib to filter
 	-> (Int -> (a, Int)) -- Filtered version of fib where the digits summed equals the regular index
-fibDigitSummed = filterFibSeq (\(x,y) -> ((sum $ digitsRev 10 (fromIntegral x)) == y))
+fibDigitSummed = filterFibSeq (\(x,y) -> sum (digitsRev 10 (fromIntegral x)) == y)
 
 -- Gens a pisano period
 fibPeriodGen :: (Integral a)
@@ -179,7 +178,7 @@ k # n = ((k-1) `mod` n) + 1
 sumDigits ::
 	Int -- Number to get digits from
 	-> Int -- digits summed up
-sumDigits = sum . (digitsRev 10)
+sumDigits = sum . digitsRev 10
 
 -- Gets a list of the digits of the number with the smallest absolute value where
 -- the digits of said number add up to the number passed in
@@ -187,7 +186,7 @@ sumDigits = sum . (digitsRev 10)
 minDigitSumList ::
 	Int -- Number to get the result from
 	-> [Int] -- Digits of result
-minDigitSumList n = (digitSum n):(replicate (abs (n `quot` 9)) ((neg n) * 9))
+minDigitSumList n = digitSum n : replicate (abs (n `quot` 9)) (neg n * 9)
 
 -- Gets the number with the smallest absolute value where the digits add up to the
 -- number passed in
@@ -195,7 +194,7 @@ minDigitSumList n = (digitSum n):(replicate (abs (n `quot` 9)) ((neg n) * 9))
 minDigitSum ::
 	Int -- Number passed in
 	-> Int -- Result
-minDigitSum = (unDigits 10) . minDigitSumList
+minDigitSum = unDigits 10 . minDigitSumList
 
 -- Sums a number's digits until it is a single digit number
 -- No ID, information is lost
@@ -207,7 +206,7 @@ minDigitSum = (unDigits 10) . minDigitSumList
 digitSum :: (Integral a)
 	=> a -- Original number
 	-> a -- Single Digit number
-digitSum n = (neg n) * (n # 9)
+digitSum n = neg n * (n # 9)
 
 --- Factors
 
@@ -222,8 +221,8 @@ factorof m n = (m `mod` n) == 0
 factors :: (Integral a) =>
 	a -- Number to get factors of
 	-> [a] -- Factors of the number
-factors n = (nub $ sort $ (below ++ (map (\ x -> (abs n) `quot` x) below)))
-	where below = [x | x <- [1..(floor $ sqrt $ fromIntegral $ abs $ n)], n `mod` x == 0]
+factors n = nub $ sort (below ++ map (\ x -> abs n `quot` x) below)
+	where below = [x | x <- [1..(floor $ sqrt $ fromIntegral $ abs n)], n `mod` x == 0]
 
 -- Gets the Prime factors of a number
 primeFactors :: (Integral a)
@@ -236,10 +235,10 @@ factorization :: (Integral a)
 	-> [(a, a)] -- Factorization of the number
 factorization n
 	| prime n = [(n,1)]
-	| otherwise = sumSame (factorizations !! 0) (factorizations !! 1)
+	| otherwise = sumSame (head factorizations) (factorizations !! 1) second
 	where
 		factorsN = factors n
-		factorizations = map factorization [(factorsN !! 1), (factorsN !! ((length factorsN) - 2))]
+		factorizations = map factorization [factorsN !! 1, factorsN !! (length factorsN - 2)]
 
 -- Get the factorPairs of a number
 factorPairs :: (Integral a)
@@ -251,7 +250,7 @@ factorPairs = combine . factors
 prime :: (Integral a)
 	=> a -- Number to check
 	-> Bool -- True if the number is prime, else False
-prime n = factors n == [1, (abs n)]
+prime n = factors n == [1, abs n]
 
 divisor :: (Integral a)
 	=> a -- Number to get factors from
@@ -262,7 +261,7 @@ divisor = sum . factors
 charRatio :: (Integral a)
 	=> a -- Number to get ratio of
 	-> Double -- Ratio
-charRatio n = (divisor n) `divide` n
+charRatio n = divisor n `divide` n
 
 --- Stern's Diatomic Series
 

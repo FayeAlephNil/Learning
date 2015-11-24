@@ -5,7 +5,7 @@ class (Functor tree) => Tree tree a where
   empty :: tree a
   treeInsert :: a -> tree a -> tree a
   fromListRooted :: tree a -> [a] -> tree a
-  fromListRooted root = foldr treeInsert root
+  fromListRooted = foldr treeInsert
   treeFromList :: [a] -> tree a
   treeFromList = fromListRooted empty
   treeToList :: tree a -> [a]
