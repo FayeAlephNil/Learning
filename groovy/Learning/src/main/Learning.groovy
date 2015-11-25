@@ -1,6 +1,7 @@
 package main
 
 import main.collections.LazyList
+import main.math.Fib
 
 def time(Closure closure) {
 	int start = System.currentTimeMillis()
@@ -11,7 +12,8 @@ def time(Closure closure) {
 
 use(CategoryClasses.IntegerCategory) {
 	new IntRange(true, -10, 10).each {
-		println "$it.fib, $it.lucas"
+		println Fib.fibNums.pisano(7).get(it) + ", " + Fib.lucasNums.pisano(7).get(it)
+		println "$it.fib, $it.lucas \n"
 	}
 
 	int print = time { println "\n" + 502 }
@@ -24,5 +26,5 @@ use(CategoryClasses.IntegerCategory) {
 	println time { println 1000.factorial } + "\n"
 
 	println LazyList.fromStrict([1,2,3,4,5]).equals(LazyList.fromStrict([1,2,3,4,5]))
-	println LazyList.fromStrict([1,2,3,4]).equals(LazyList.fromStrict([1,2,3,4,5]))
+	println LazyList.fromStrict([1,2,3,4, 5]).equals(LazyList.fromStrict([1,2,3,4]))
 }
