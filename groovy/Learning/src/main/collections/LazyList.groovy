@@ -128,7 +128,7 @@ class LazyList<E> {
 	}
 
 	def List<E> take(int amount) {
-		fold(n, []) { acc, item -> acc << item} as List<E>
+		fold(amount, []) { acc, item -> acc << item} as List<E>
 	}
 
 	def List<E> takeAll() {
