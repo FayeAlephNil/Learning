@@ -1,4 +1,4 @@
-package collections
+package main.collections
 
 class LazyList<E> {
 	static def <E> LazyList<E> sequence(Closure<E> closure, LazyList<E> acc = nil()) {
@@ -18,7 +18,7 @@ class LazyList<E> {
 	}
 
 	static def <E> LazyList<E> nil() {
-		new LazyList(0, {-> null})
+		new LazyList({ 0 }, {-> null})
 	}
 
 	private def Closure<Tuple2<E, Closure>> closure

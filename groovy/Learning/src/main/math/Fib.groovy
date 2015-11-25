@@ -1,10 +1,11 @@
-package math
+package main.math
 
-import collections.CollectionUtil
-import collections.LazyList
+import main.CategoryClasses
+import main.collections.LazyList
 
 class Fib {
 	public static final fibNums = new Fib(0, 1)
+	public static final lucasNums = new Fib(2, 1)
 
 	private final def Number first
 	private final def Number second
@@ -21,5 +22,5 @@ class Fib {
 		this.second = second
 	}
 
-	def get = CollectionUtil.listAndNega(list, negaList)
+	def get = use(CategoryClasses.ListCategory) { list.andNega(negaList) }
 }

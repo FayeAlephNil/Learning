@@ -1,4 +1,4 @@
-package collections
+package main.collections
 
 class CollectionUtil {
 	public static def listAndNega(list, negaList) {

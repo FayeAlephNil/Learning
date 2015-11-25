@@ -1,6 +1,6 @@
-package math
+package main.math
 
-import collections.LazyList
+import main.collections.LazyList
 
 class MathRefs {
 	static def natural = LazyList.sequence { LazyList<Integer> before ->
