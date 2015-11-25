@@ -148,6 +148,8 @@ class LazyList<E> {
 			def list = o as LazyList<E>
 			if (list.empty && self.empty) {
 				acc
+			} else if (list.empty || self.empty) {
+				false
 			} else {
 				def firstsEqual = list.first().equals(self.first())
 				equalsStatic(list.tail(), self.tail(), firstsEqual)
