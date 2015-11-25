@@ -5,7 +5,7 @@ import main.collections.LazyList
 def time(Closure closure) {
 	int start = System.currentTimeMillis()
 	closure.call()
-	start - System.currentTimeMillis()
+	System.currentTimeMillis() - start
 }
 
 
@@ -21,5 +21,8 @@ use(CategoryClasses.IntegerCategory) {
 	println sizePrint - print
 
 	println LazyList.nil().size() + "\n"
-	println 20.factorial
+	println time { println 1000.factorial } + "\n"
+
+	println LazyList.fromStrict([1,2,3,4,5]).equals(LazyList.fromStrict([1,2,3,4,5]))
+	println LazyList.fromStrict([1,2,3,4]).equals(LazyList.fromStrict([1,2,3,4,5]))
 }

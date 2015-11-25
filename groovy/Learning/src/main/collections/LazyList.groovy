@@ -1,5 +1,8 @@
 package main.collections
 
+import groovy.transform.CompileStatic
+import groovy.transform.TailRecursive
+
 class LazyList<E> {
 	static def <E> LazyList<E> sequence(Closure<E> closure, LazyList<E> acc = nil()) {
 		def E first = closure.call(acc)
@@ -99,21 +102,17 @@ class LazyList<E> {
 			})
 	}
 
-	static def Iterator<E> iterator(LazyList<E> list) {
-		new AnIterator<E>(list)
-	}
-
 	def last(LazyList<E> list = this) {
 		def tail = list.tail()
-		tail.isEmpty() ? list.first() : tail.last()
+		tail.isEmpty() ? list.first() : last(tail)
 	}
 
 	def empty() {
 		isEmpty()
 	}
 
-	def iterator() {
-		iterator(this)
+	def Iterator<E> iterator() {
+		new AnIterator<E>(this)
 	}
 
 	def List<E> toList() {
@@ -137,12 +136,22 @@ class LazyList<E> {
 	}
 
 	def boolean equals(Object o) {
-		if (this == null && o.equals(nil())) return true
+		equalsStatic(o, this)
+	}
+
+	@CompileStatic
+	@TailRecursive
+	private static def boolean equalsStatic(Object o, LazyList<E> self, boolean acc = true) {
+		if (self == null && equalsStatic(o, nil())) return true
 		def isList = o instanceof LazyList<E>
 		if (isList) {
 			def list = o as LazyList<E>
-			def firstsEqual = list.first().equals(this.first())
-			firstsEqual && ((list.tail().empty && this.tail().empty) || list.tail().equals(this.tail()))
+			if (list.empty && self.empty) {
+				acc
+			} else {
+				def firstsEqual = list.first().equals(self.first())
+				equalsStatic(list.tail(), self.tail(), firstsEqual)
+			}
 		} else {
 			false
 		}

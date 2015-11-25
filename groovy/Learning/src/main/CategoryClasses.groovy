@@ -1,5 +1,7 @@
 package main
 
+import groovy.transform.CompileStatic
+import groovy.transform.TailRecursive
 import main.math.Fib
 
 class CategoryClasses {
@@ -16,6 +18,8 @@ class CategoryClasses {
 			getFactorialRec(self)
 		}
 
+		@CompileStatic
+		@TailRecursive
 		private static BigInteger getFactorialRec(Integer self, BigInteger acc = 1) {
 			if (self < 0) {
 				throw new IllegalArgumentException("Passed negative to getFactorial function: $self")
