@@ -1,3 +1,3 @@
 ## Learning
 
-Learnning some langs
+Learning some langs
