@@ -7,7 +7,7 @@ import Trees.Tree
 import Control.Applicative
 
 data BinaryTree a = EmptyTree | Node a (BinaryTree a) (BinaryTree a) deriving (Show, Read, Eq)
-type OrderedBiTree = (Ord a) => BinaryTree a
+type OrderedBiTree a = (Ord a) => BinaryTree a
 
 instance Functor BinaryTree where
   fmap f EmptyTree = EmptyTree
