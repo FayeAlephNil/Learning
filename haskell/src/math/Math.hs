@@ -235,7 +235,7 @@ factorization :: (Integral a)
 	-> [(a, a)] -- Factorization of the number
 factorization n
 	| prime n = [(n,1)]
-	| otherwise = sumSame (head factorizations) (factorizations !! 1) second
+	| otherwise = sumSame (head factorizations) (factorizations !! 1)
 	where
 		factorsN = factors n
 		factorizations = map factorization [factorsN !! 1, factorsN !! (length factorsN - 2)]
