@@ -296,3 +296,38 @@ sternRatio ::
 	Int -- Index
 	-> Ratio Int -- Ratio
 sternRatio n = sternRatios !! n
+
+--- CIrcles
+
+tau = 2 * pi
+
+-- Calculates the circumference using triangles to a certain precision
+triCircum ::
+  Double -- Radius
+  -> Double -- Precision or number of triangles
+  -> Double -- Circumference
+triCircum r n = let
+  triHeight = r * sin(tau/n)
+  in n * triHeight
+
+-- Calculates circumference with formula
+circum ::
+  Double -- Radius
+  -> Double -- Circumference
+circum = (* tau)
+
+-- Calculates circle area using triangles to a certain precision
+triCircleArea ::
+  Double -- Radius
+  -> Double -- Precision or number of triangles
+  -> Double -- Area
+triCircleArea r n = let
+  triHeight = r * sin(tau/n)
+  oneTri = 1/2 * r * triHeight
+  in oneTri * n
+
+-- Calculates circle area with formula
+circleArea ::
+  Double -- Radius
+  -> Double -- Area
+circleArea = (* pi) . (^ 2)
