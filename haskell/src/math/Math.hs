@@ -9,7 +9,7 @@ import Data.Function
 import Data.Digits
 
 --- My imports
-import Util.Util
+import qualified Util.Util as Util
 
 --- Util
 
@@ -103,8 +103,8 @@ filterFibSeq ::
 											 --a result and regular index. Compose with fst for just result
 filterFibSeq f gen = listAndNega list negaList
 	where
-		list = filter f $ zipWith tuple (map gen [0..]) [0..]
-		negaList = filter f $ zipWith tuple (map gen [0,(-1)..]) [0,(-1)..]
+		list = filter f $ zipWith Util.tuple (map gen [0..]) [0..]
+		negaList = filter f $ zipWith Util.tuple (map gen [0,(-1)..]) [0,(-1)..]
 
 -- Regenerates a fib
 regenWithGen :: (Num a) =>
@@ -235,7 +235,7 @@ factorization :: (Integral a)
 	-> [(a, a)] -- Factorization of the number
 factorization n
 	| prime n = [(n,1)]
-	| otherwise = sumSame (head factorizations) (factorizations !! 1)
+	| otherwise = Util.sumSame (head factorizations) (factorizations !! 1)
 	where
 		factorsN = factors n
 		factorizations = map factorization [factorsN !! 1, factorsN !! (length factorsN - 2)]
@@ -244,7 +244,7 @@ factorization n
 factorPairs :: (Integral a)
 	=> a -- Number to get factor pairs of
 	-> [(a, a)] -- Factor Pairs
-factorPairs = combine . factors
+factorPairs = Util.combine . factors
 
 -- Checks if a number is prime
 prime :: (Integral a)

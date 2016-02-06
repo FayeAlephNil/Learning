@@ -23,3 +23,9 @@ sumSame xs [] = xs
 sumSame (x:xs) yss@(y:ys)
 	| fst x == fst y = (fst x, snd x + snd y) : sumSame xs ys
 	| otherwise = x : sumSame xs yss
+
+maxLength :: [[a]] -> Int
+maxLength xs = maximum $ map length xs
+
+maxIndex :: [[a]] -> Int
+maxIndex xs = maxLength xs - 1

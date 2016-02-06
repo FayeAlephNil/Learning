@@ -1,12 +1,11 @@
 module All where
 
-import Trees.BinaryTree
-import Trees.LinkedList
-import Trees.Tree
+import qualified Trees.BinaryTree as BTree
+import qualified Trees.LinkedList as Linked
+import qualified Trees.Tree as Tree
 
-import Math.Math
-
-import Util.Util
+import qualified Math.Math as Math
+import qualified Util.Util as Util
 
 import Control.Applicative
 import Control.Monad
