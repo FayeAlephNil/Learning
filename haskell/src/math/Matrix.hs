@@ -2,11 +2,19 @@ module Math.Matrix
 ( Matrix
 , Matrices
 , create
+, createColumns
+, fromListRows
+, fromListColumns
 , empty
 , size
 , rows
 , columns
 , items
+, get
+, getAllList
+, getAllIndex
+, indexPositions
+, getAll
 , transpose
 , add
 , scalarMult
@@ -31,8 +39,21 @@ type Matrices a = [Matrix a]
 create :: [[a]] -> Matrix a
 create rs = Create rs (List.transpose rs)
 
+createColumns :: [[a]] -> Matrix a
+createColumns cs = Create (List.transpose cs) cs
+
+fromListRows :: Int -> [a] -> Matrix a
+fromListRows i xs = create [xss !! idx | idx <- [0..(i - 1)]]
+  where
+    xss = Util.splitInto i xs
+
+fromListColumns :: Int -> [a] -> Matrix a
+fromListColumns j xs = create [xss !! idx | idx <- [0..(j - 1)]]
+  where
+    xss = Util.groupsOf j xs
+
 empty :: Matrix a
-empty = create []
+empty = Create [] []
 
 size :: Matrix a -> (Int, Int)
 size (Create rs cs) = (length rs, length cs)
@@ -45,6 +66,27 @@ columns (Create _ cs) = cs
 
 items :: Matrix a -> [a]
 items = concat . rows
+
+get :: Matrix a -> Int -> Int -> a
+get (Create rs _) i j = (rs !! i) !! j
+
+getAllList :: [Matrix a] -> Int -> Int -> [a]
+getAllList [] _ _ = []
+getAllList (m : ms) i j = get m i j : getAllList ms i j
+
+getAllIndex :: Matrix (Matrix a) -> Int -> Int -> Matrix a
+getAllIndex (Create [] _) _ _ = empty
+getAllIndex m i j = fmap (\x -> get x i j) m
+
+indexPositions :: Int -> Int -> Matrix (Int, Int)
+indexPositions _ 0 = empty
+indexPositions 0 _ = empty
+indexPositions a b = fromListRows a $ Util.pairsUpTo (a - 1) (b - 1)
+
+getAll :: Matrix (Matrix a) -> Matrix (Matrix a)
+getAll m = fmap (uncurry $ getAllIndex m) idxPos
+  where
+    idxPos = uncurry indexPositions $ size m
 
 transpose :: Matrix a -> Matrix a
 transpose (Create rs cs) = Create cs rs
@@ -78,7 +120,10 @@ zipMatrix :: Matrix a -> Matrix b -> Matrix (a, b)
 zipMatrix = zipWithMatrix Util.tuple
 
 concatMatrix :: Matrix (Matrix a) -> Matrix a
-concatMatrix = create . concatMap rows . items
+concatMatrix m = fromListRows (fst $ size m) $ concatMap items $ items m
+  where
+    getSize (Create [] _) = 0
+    getSize (Create ((x : xs) : rs) _) = fst $ size x
 
 instance Foldable Matrix where
   foldr f acc (Create rs _) = foldr f acc $ concat rs
@@ -88,9 +133,16 @@ instance Functor Matrix where
     where
       rs' = map (map f) rs
 
-instance Applicative Matrix where
-  pure a = Create [[a]] [[a]]
-  a <*> b = concatMatrix $ fmap (`fmap` b) a
+-- TODO, figure out Applicative and Monad instances
+
+-- instance Applicative Matrix where
+  -- pure a = Create [[a]] [[a]]
+  -- a <*> b = concatMatrix $ fmap (`fmap` b) a
+
+-- instance Monad Matrix where
+  -- return = pure
+  -- m >>= g = concatMatrix $ fmap g m
 
 instance (Show a) => Show (Matrix a) where
+  show (Create [] _) = "[]"
   show (Create rs _) = tail $ foldl (\ acc a -> acc ++ "\n" ++ show a) "" rs
