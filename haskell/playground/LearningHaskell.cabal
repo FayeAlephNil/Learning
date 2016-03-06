@@ -18,7 +18,8 @@ cabal-version:       >=1.10
 
 library
   ghc-options: -fno-warn-tabs
-  exposed-modules:     All
+  exposed-modules:    Math.Math, Math.Matrix, Trees.BinaryTree, Trees.LinkedList,
+                      Trees.Tree, Util.Util
   -- other-modules:
   default-extensions: MultiParamTypeClasses, FlexibleInstances, RankNTypes, TypeSynonymInstances
   build-depends:       base >=4.8 && <4.9, digits == 0.2
