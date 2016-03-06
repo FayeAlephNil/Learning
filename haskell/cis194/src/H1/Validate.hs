@@ -21,4 +21,4 @@ getSum :: Int -> Int
 getSum n = sum $ map digitSum $ doubleEveryOther $ digits n
 
 validate :: Int -> Bool
-validate n = (getSum n) `mod` 10 == 0
+validate n = getSum n `mod` 10 == 0

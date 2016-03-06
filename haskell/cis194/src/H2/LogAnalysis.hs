@@ -33,10 +33,10 @@ build = foldl (flip insert) Leaf
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node Leaf l right) = l : inOrder right
-inOrder (Node left l right) = (inOrder left) ++ [l] ++ (inOrder right)
+inOrder (Node left l right) = inOrder left ++ [l] ++ inOrder right
 
 whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong ls = map (\(_, y) -> y) $ filter err50 $ map toLogMsg $ filter isError sorted
+whatWentWrong ls = map snd $ filter err50 $ map toLogMsg $ filter isError sorted
   where
     sorted = inOrder $ build ls
     isError (LogMessage (Error _) _ _)= True
