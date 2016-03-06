@@ -1,8 +1,4 @@
-module Homework1
-    ( validate
-    ) where
-
---- Validate
+module H1.Validate (validate) where
 
 -- Taken from digits library as I'd already seen that source code
 -- Not using libraries because that would be cheating, but I knew this impl
@@ -26,14 +22,3 @@ getSum n = sum $ map digitSum $ doubleEveryOther $ digits n
 
 validate :: Int -> Bool
 validate n = (getSum n) `mod` 10 == 0
-
---- Hanoi
-
-type Peg = String
-type Move = (Peg, Peg)
-
-hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
-hanoi 0 _ _ _ = []
-hanoi n a b c = (hanoi m a c b) ++ [(a, b)] ++ (hanoi m c b a)
-  where
-    m = n - 1
