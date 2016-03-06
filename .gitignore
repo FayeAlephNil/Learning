@@ -1,4 +1,5 @@
 pom.properties
+/smalltalk/
 
 # Created by https://www.gitignore.io/api/,elixir,clojure,java,eclipse,intellij,sublimetext,netbeans,scala,haskell,rust,leiningen,gradle,grails,python,ruby
 
