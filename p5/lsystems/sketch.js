@@ -1,4 +1,12 @@
-var system, angleSlider, gen, xstart, ystart;
+var system;
+var angleSlider;
+
+var colorBox;
+
+var gen;
+var curr;
+
+var xstart, ystart;
 
 var zoom = 1;
 
@@ -30,9 +38,9 @@ function setup() {
   // });
 
   // Levy C. Curve
-  // system = new System("F", {
-  //   "F": "+F--F+"
-  // });
+  system = new System("F", {
+    "F": "+F--F+"
+  });
 
   // Tree-like system (https://youtu.be/E1B4UoSQMFw)
   // system = new System("F", {
@@ -52,14 +60,15 @@ function setup() {
   // });
 
   // Gosper Curve
-  system = new System("A", {
-    "A": "A-B--B+A++AA+B-",
-    "B": "+A-BB--B-A++A+B"
-  });
+  // system = new System("A", {
+  //   "A": "A-B--B+A++AA+B-",
+  //   "B": "+A-BB--B-A++A+B"
+  // });
 
-  angleSlider = createSlider(0, PI, PI / 3, 0.01);
+  angleSlider = createSlider(0, PI, PI / 6, 0.01);
 
   colorMode(HSB);
+  colorBox = createCheckbox('Color', true);
 
   gen = createP("");
   curr = createP("");
@@ -70,8 +79,11 @@ function turtle(s, angle) {
   for (var i = 0; i < s.length; i++) {
     var char = s[i];
     if (char == "A" || char == "B" || char == "F") {
-      var c = map(i, 0, s.length - 1, 0, 360);
-      stroke(c, 100, 100, 0.67);
+      if (colorBox.checked()) {
+        var c = map(i, 0, s.length - 1, 0, 360);
+        stroke(c, 100, 100, 0.67);
+      }
+
       line(0, 0, 0, -len);
       translate(0, -len);
     } else if (char == "+") {
@@ -84,17 +96,6 @@ function turtle(s, angle) {
       pop();
     }
   }
-}
-
-function within(val, min, max) {
-  if (max) {
-    return val > min && val < max;
-  }
-  return val > 0 && val < min;
-}
-
-function mouseIn() {
-  return within(mouseX, width) && within(mouseY, height);
 }
 
 function draw() {
@@ -110,6 +111,7 @@ function draw() {
   rotate(PI / 2);
 
   scale(zoom);
+  stroke(0, 0, 100, 0.8)
   strokeWeight(1 / zoom)
 
   gen.html("Gen: " + system.count);
@@ -123,6 +125,18 @@ function keyPressed() {
   } else if (keyCode == RIGHT_ARROW) {
     system = system.next();
   }
+}
+
+
+function within(val, min, max) {
+  if (max) {
+    return val > min && val < max;
+  }
+  return val > 0 && val < min;
+}
+
+function mouseIn() {
+  return within(mouseX, width) && within(mouseY, height);
 }
 
 function mouseDragged() {
