@@ -1,7 +1,11 @@
-var system, angleSlider, zoomSlider, gen;
+var system, angleSlider, gen, xstart, ystart;
+
+var zoom = 1;
 
 function setup() {
   createCanvas(400, 400);
+  xstart = width / 2;
+  ystart = height / 2;
 
   // Koch snowflake
   // system = new System("F", {
@@ -53,11 +57,11 @@ function setup() {
     "B": "+A-BB--B-A++A+B"
   });
 
+  angleSlider = createSlider(0, PI, PI / 3, 0.01);
+
   colorMode(HSB);
 
   gen = createP("");
-  angleSlider = createSlider(0, PI, PI / 3, 0.01)
-  zoomSlider = createSlider(0.001, 1, 1, 0.001)
   curr = createP("");
 }
 
@@ -82,14 +86,31 @@ function turtle(s, angle) {
   }
 }
 
+function within(val, min, max) {
+  if (max) {
+    return val > min && val < max;
+  }
+  return val > 0 && val < min;
+}
+
+function mouseIn() {
+  return within(mouseX, width) && within(mouseY, height);
+}
+
 function draw() {
+  if (key == ".") {
+    zoom += 0.05;
+  } else if (key == ",") {
+    zoom -= 0.05;
+  }
+
   background(0, 0, 40);
 
-  translate(width / 2, height / 2);
+  translate(xstart, ystart);
   rotate(PI / 2);
 
-  scale(zoomSlider.value());
-  strokeWeight(1 / zoomSlider.value())
+  scale(zoom);
+  strokeWeight(1 / zoom)
 
   gen.html("Gen: " + system.count);
   curr.html("Current: <p></p>" + system.current)
@@ -101,5 +122,12 @@ function keyPressed() {
     system = system.parent;
   } else if (keyCode == RIGHT_ARROW) {
     system = system.next();
+  }
+}
+
+function mouseDragged() {
+  if (mouseIn()) {
+    xstart = mouseX;
+    ystart = mouseY;
   }
 }
