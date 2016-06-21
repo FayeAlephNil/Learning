@@ -38,8 +38,13 @@ function setup() {
   // });
 
   // Levy C. Curve
+  // system = new System("F", {
+  //   "F": "+F--F+"
+  // });
+
+  // Modified Levy C. Curve
   system = new System("F", {
-    "F": "+F--F+"
+    "F": "+F-F-F+"
   });
 
   // Tree-like system (https://youtu.be/E1B4UoSQMFw)
@@ -65,7 +70,7 @@ function setup() {
   //   "B": "+A-BB--B-A++A+B"
   // });
 
-  angleSlider = createSlider(0, PI, PI / 6, 0.01);
+  angleSlider = createSlider(0, PI, PI / 4, 0.01);
 
   colorMode(HSB);
   colorBox = createCheckbox('Color', true);
