@@ -13,7 +13,7 @@ var mmax = 20;
 
 function setup() {
   createCanvas(400, 400);
-  totalSlide = createSlider(0, 100, 50, 1);
+  totalSlide = createSlider(0, 500, 12, 1);
   colorMode(HSB);
 
   moff = 3 * PI / 2;
@@ -33,12 +33,16 @@ function draw() {
     scalar = width / 2;
   }
 
-  translate(width / 2, height / 2);
-
   m = map(sin(moff), -1, 1, 0, mmax);
   moff += TWO_PI / (mmax * 100);
 
   background(51);
+
+  drawShape();
+}
+
+function drawShape() {
+  translate(width / 2, height / 2);
 
   var da = TWO_PI / totalSlide.value();
   var prevx;
