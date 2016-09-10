@@ -14,8 +14,8 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  other-modules:       H1.Hanoi, H1.Validate, H2.Log, H2.LogAnalysis
-  build-depends:       base >= 4.7 && < 5
+  other-modules:       H1.Hanoi, H1.Validate, H2.Log, H2.LogAnalysis, H3.Golf
+  build-depends:       base >= 4.7 && < 5, text, containers
   default-language:    Haskell2010
 
 source-repository head

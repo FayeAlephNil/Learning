@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/Users/Wes/Desktop/Repos/Personal/Learning/haskell/cis194/" type="text/css" />
+</head>
+<body>
+<h1 id="code-golf-homework-3">Code Golf Homework 3</h1><pre><span class='hs-varop'>&gt;</span> <span class='hs-keyword'>module</span> <span class='hs-conid'>H3</span><span class='hs-varop'>.</span><span class='hs-conid'>Golf</span> <span class='hs-keyword'>where</span>
+</pre><h2 id="skips">Skips</h2><p>We first create a list of copies (cps) of the given list that is the same length<br />
+as the initial list. As an example of the type of the value of cps to be expected<br />
+given an input</p><p><code>[1, 2, 3] =&gt; [[1,2,3], [1,2,3], [1,2,3]]</code></p><p>We then zip that with the human-index of the copies list giving us tuples of<br />
+value index pairs. We then apply a filter to each list in which we only accept<br />
+values with an index that is divisible by the index of that list. This uses<br />
+the same method of zipping the list with the human-index to get tuples.</p><pre><span class='hs-varop'>&gt;</span> <span class='hs-definition'>skips</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>a</span><span class='hs-keyglyph'>]</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyglyph'>[</span><span class='hs-keyglyph'>[</span><span class='hs-varid'>a</span><span class='hs-keyglyph'>]</span><span class='hs-keyglyph'>]</span>
+<span class='hs-varop'>&gt;</span> <span class='hs-definition'>skips</span> <span class='hs-varid'>xs</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyglyph'>[</span><span class='hs-keyglyph'>[</span><span class='hs-varid'>y</span> <span class='hs-keyglyph'>|</span> <span class='hs-layout'>(</span><span class='hs-varid'>y</span><span class='hs-layout'>,</span> <span class='hs-varid'>j</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>zip</span> <span class='hs-varid'>ys</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>1</span><span class='hs-keyglyph'>..</span><span class='hs-keyglyph'>]</span><span class='hs-layout'>,</span> <span class='hs-varid'>j</span> <span class='hs-varop'>`mod`</span> <span class='hs-varid'>i</span> <span class='hs-varop'>==</span> <span class='hs-num'>0</span><span class='hs-keyglyph'>]</span> <span class='hs-keyglyph'>|</span> <span class='hs-layout'>(</span><span class='hs-varid'>ys</span><span class='hs-layout'>,</span> <span class='hs-varid'>i</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>zip</span> <span class='hs-varid'>cps</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>1</span><span class='hs-keyglyph'>..</span><span class='hs-keyglyph'>]</span><span class='hs-keyglyph'>]</span>
+<span class='hs-varop'>&gt;</span>   <span class='hs-keyword'>where</span>
+<span class='hs-varop'>&gt;</span>     <span class='hs-varid'>cps</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>replicate</span> <span class='hs-layout'>(</span><span class='hs-varid'>length</span> <span class='hs-varid'>xs</span><span class='hs-layout'>)</span> <span class='hs-varid'>xs</span>
+</pre><h2 id="section"></h2>
+</body>
+</html>
